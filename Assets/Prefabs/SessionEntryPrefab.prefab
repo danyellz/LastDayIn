@@ -643,6 +643,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b8dc9edc22e48a389ae31bf4bc7ef8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomName: {fileID: 5816630821267760113}
+  sessionName: {fileID: 5816630821267760113}
   playerCount: {fileID: 6461875064983430690}
   joinButton: {fileID: 6122720657803089112}
