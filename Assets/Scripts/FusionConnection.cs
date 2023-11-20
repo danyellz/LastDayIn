@@ -1,4 +1,5 @@
- using UnityEngine;
+using UnityEngine;
+using UnityEngine.UI;
 using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
@@ -9,49 +10,109 @@ namespace FirstDayIn.Network {
     {
 
         public static FusionConnection instance;
-        public bool connectOnAwake = false;
         [HideInInspector] public NetworkRunner runner;
         [SerializeField] NetworkObject playerPrefab;
         private Dictionary<PlayerRef, NetworkObject> spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
         public string _playerName = null;
+        private List<SessionInfo> _sessions = new List<SessionInfo>(); 
+
+
+        [Header("SessionList")]
+        public GameObject roomListCanvas;  
+        public Button refreshButton;
+        public Transform sessionListContent;
+        public GameObject sessionEntryPrefab;
 
         private void Awake() {
             if (instance == null) {
                 instance = this;
-            }
-
-            if (connectOnAwake == true) {
-                ConnectToRunner("Anonymous");
-            }
+            } 
         }
 
-        public async void ConnectToRunner(string playerName) {
-            Debug.Log("ConnectToRunner");
+        public async void ConnectToSession(string sessionName) {
+            Debug.Log("ConnectToSession");
 
-            _playerName = playerName;
-
+            roomListCanvas.SetActive(false);
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
-                SessionName = "test3",
+                SessionName = sessionName,
                 PlayerCount = 10,
-                SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
             });
         }
+
+        public async void CreateSession() {
+            Debug.Log("CreateSession");
+
+            int randomInt = UnityEngine.Random.Range(1000,9999);
+            string randomSessionName = "Room-" + randomInt.ToString();
+
+            roomListCanvas.SetActive(false);
+            if (runner == null) {
+                runner = gameObject.AddComponent<NetworkRunner>();
+            }
+
+            await runner.StartGame(new StartGameArgs() {
+                GameMode = GameMode.Shared,
+                SessionName = randomSessionName,
+                PlayerCount = 10,
+            });
+        }
+
+        public async void ConnectToLobby(string playerName) {
+            roomListCanvas.SetActive(true);
+            _playerName = playerName;
+
+            if (runner == null) {
+                runner.gameObject.AddComponent<NetworkRunner>();
+            }
+
+            runner.JoinSessionLobby(SessionLobby.Shared); 
+        }
+
+        public void RefreshSessionListUI() {
+            foreach (Transform child in sessionListContent) {
+                Destroy(child.gameObject);
+            }
+
+            foreach (SessionInfo session in _sessions) {
+                if (session.IsVisible) {
+                    GameObject entry = GameObject.Instantiate(sessionEntryPrefab, sessionListContent);
+                    SessionEntryPrefab script = entry.GetComponent<SessionEntryPrefab>();
+                    script.sessionName.text = session.Name;
+                    script.playerCount.text = session.PlayerCount + "/" + session.MaxPlayers;
+
+                    if (session.IsOpen == false || session.PlayerCount >= session.MaxPlayers) {
+                        script.joinButton.interactable = false;
+                    } else {
+                        script.joinButton.interactable = true;
+                    }
+                }
+            }
+        }
+
+        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
+            Debug.Log("OnSessionListUpdated");
+            _sessions.Clear();
+            _sessions = sessionList;
+        }
+
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
             Debug.Log("OnPlayerJoined");
         }
+
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { 
             // Find and remove the players avatar
             if (spawnedCharacters.TryGetValue(player, out NetworkObject networkObject)) {
                 runner.Despawn(networkObject);
             }
         }
+
         public void OnInput(NetworkRunner runner, NetworkInput input) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
@@ -64,7 +125,6 @@ namespace FirstDayIn.Network {
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
-        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
         public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) { }
