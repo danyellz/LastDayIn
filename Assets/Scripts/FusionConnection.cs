@@ -41,7 +41,7 @@ namespace FirstDayIn.Network {
             }
 
             await runner.StartGame(new StartGameArgs() {
-                GameMode = GameMode.AutoHostOrClient,
+                GameMode = GameMode.Shared,
                 SessionName = randomSessionName,
                 PlayerCount = 10,
             });
