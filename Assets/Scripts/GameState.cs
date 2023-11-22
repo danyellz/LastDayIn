@@ -12,66 +12,85 @@ public class GameState : NetworkBehaviour
     [Networked] public EGameState Previous { get; set; }
 	[Networked] public EGameState Current { get; set; }
 
+    [Networked] TickTimer Delay { get; set; }
+    [Networked] EGameState DelayedState { get; set; }
+
     protected StateMachine<EGameState> StateMachine = new StateMachine<EGameState>();
 
-    public void Spawned() {
-        Debug.Log("GameState Awake()");
+    private void Start() {
+        // Debug.Log("GameState Spawned()");
 
-        StateMachine[EGameState.Off].onExit = newState =>
+        // StateMachine[EGameState.Off].onExit = newState =>
+		// {
+		// 	Debug.Log($"Exited {EGameState.Off} to {newState}");
+
+		// 	if (FusionConnection.instance.runner.IsServer) { }
+
+		// 	if (FusionConnection.instance.runner.IsPlayer) // [PLAYER] Off -> *
+		// 	{
+		// 		// GameManager.im.gameUI.InitPregame(Runner);
+		// 	}
+		// };
+
+		// StateMachine[EGameState.Pregame].onEnter = state =>
+		// {
+		// 	Debug.Log($"Entered {EGameState.Pregame} from {state}");
+		// };
+
+		// StateMachine[EGameState.Play].onEnter = state =>
+		// {
+		// 	Debug.Log($"Entered {EGameState.Play} from {state}");
+		// };
+
+		// StateMachine[EGameState.Meeting].onEnter = state =>
+		// {
+		// 	Debug.Log($"Entered {EGameState.Meeting} from {state}");
+		// };
+
+		// StateMachine[EGameState.Meeting].onExit = newState =>
+		// {
+		// 	Debug.Log($"Exited {EGameState.Meeting} to {newState}");
+		// };
+
+		// StateMachine[EGameState.VoteResults].onEnter = state =>
+		// {
+        //     Debug.Log($"Entered {EGameState.VoteResults} from {state}");
+		// };
+
+		// StateMachine[EGameState.CrewWin].onEnter = state =>
+		// {
+		// 	Debug.Log($"Entered {EGameState.CrewWin} from {state}");
+		// };
+
+		// StateMachine[EGameState.CrewWin].onExit = newState => 
+        // {
+        //     Debug.Log($"Exited {EGameState.CrewWin} to {newState}");
+        // };
+
+		// StateMachine[EGameState.ImpostorWin].onEnter = state =>
+		// {
+		// 	Debug.Log($"Entered {EGameState.ImpostorWin} from {state}");
+		// };
+
+		// StateMachine[EGameState.ImpostorWin].onExit = newState => {
+        //     Debug.Log($"Exited {EGameState.ImpostorWin} to {newState}");
+        // };
+    }
+
+    public override void FixedUpdateNetwork() {
+        Debug.Log("FixedUpdateNetwork()");
+
+        if (Runner.IsServer)
 		{
-			Debug.Log($"Exited {EGameState.Off} to {newState}");
-
-			if (FusionConnection.instance.runner.IsServer) { }
-
-			if (FusionConnection.instance.runner.IsPlayer) // [PLAYER] Off -> *
+			if (Delay.Expired(Runner))
 			{
-				// GameManager.im.gameUI.InitPregame(Runner);
+				Delay = TickTimer.None;
+				Server_SetState(DelayedState);
 			}
-		};
+		}
 
-		StateMachine[EGameState.Pregame].onEnter = state =>
-		{
-			Debug.Log($"Entered {EGameState.Pregame} from {state}");
-		};
-
-		StateMachine[EGameState.Play].onEnter = state =>
-		{
-			Debug.Log($"Entered {EGameState.Play} from {state}");
-		};
-
-		StateMachine[EGameState.Meeting].onEnter = state =>
-		{
-			Debug.Log($"Entered {EGameState.Meeting} from {state}");
-		};
-
-		StateMachine[EGameState.Meeting].onExit = newState =>
-		{
-			Debug.Log($"Exited {EGameState.Meeting} to {newState}");
-		};
-
-		StateMachine[EGameState.VoteResults].onEnter = state =>
-		{
-            Debug.Log($"Entered {EGameState.VoteResults} from {state}");
-		};
-
-		StateMachine[EGameState.CrewWin].onEnter = state =>
-		{
-			Debug.Log($"Entered {EGameState.CrewWin} from {state}");
-		};
-
-		StateMachine[EGameState.CrewWin].onExit = newState => 
-        {
-            Debug.Log($"Exited {EGameState.CrewWin} to {newState}");
-        };
-
-		StateMachine[EGameState.ImpostorWin].onEnter = state =>
-		{
-			Debug.Log($"Entered {EGameState.ImpostorWin} from {state}");
-		};
-
-		StateMachine[EGameState.ImpostorWin].onExit = newState => {
-            Debug.Log($"Exited {EGameState.ImpostorWin} to {newState}");
-        };
+		if (Runner.IsForward)
+			StateMachine.Update(Current, Previous);
     }
 
     public void Server_SetState(EGameState st)
@@ -80,4 +99,19 @@ public class GameState : NetworkBehaviour
 		Previous = Current;
 		Current = st;
 	}
+
+    public void Server_DelaySetState(EGameState newState, float delay)
+	{
+		Debug.Log($"Delay state change to {newState} for {delay}s");
+		Delay = TickTimer.CreateFromSeconds(Runner, delay);
+		DelayedState = newState;
+	}
+
+    // protected static void Server_SetState(Changed<GameState> changed) {
+    //     Debug.Log($"Server_SetState to {changed.Behaviour.Previous}");
+
+    //     if (changed.Behaviour.Current == FusionConnection.instance._state) return;
+	// 	changed.Behaviour.Previous = changed.Behaviour.Current;
+	// 	changed.Behaviour.Current = FusionConnection.instance._state;
+    // }
 }

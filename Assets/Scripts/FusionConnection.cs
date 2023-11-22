@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 namespace FirstDayIn.Network {
-    public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
+    public class FusionConnection : NetworkBehaviour, INetworkRunnerCallbacks
     {
 
         public static FusionConnection instance;
@@ -16,7 +16,8 @@ namespace FirstDayIn.Network {
         public string _playerName = null;
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
-        public static GameState State { get; private set; }
+        [SerializeField] GameState stateManager;
+        public GameState.EGameState _state;
 
         [Header("SessionList")]
         public GameObject roomListCanvas;  
@@ -26,9 +27,17 @@ namespace FirstDayIn.Network {
 
         private void Awake() {
             if (instance == null) {
+                Debug.Log("FusionConnection Awake()");
                 instance = this;
-                State = GetComponent<GameState>();
+                stateManager = gameObject.AddComponent<GameState>();
             } 
+        }
+
+        private void Spawned() {
+            Debug.Log("FusionConnection Spawned()");
+            if (Runner.IsServer) {
+			    stateManager.Server_SetState(GameState.EGameState.Pregame);
+		    }
         }
 
         public async void CreateSession() {
@@ -68,6 +77,7 @@ namespace FirstDayIn.Network {
 
             roomListCanvas.SetActive(true);
             _playerName = playerName;
+            _state = GameState.EGameState.Pregame;
 
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
@@ -108,8 +118,6 @@ namespace FirstDayIn.Network {
                 Debug.Log("OnConnectedToServer");
                 NetworkObject playerObject = runner.Spawn(playerPrefab, Vector3.zero);
                 runner.SetPlayerObject(runner.LocalPlayer, playerObject);
-
-                State.Server_SetState(GameState.EGameState.Pregame);
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
