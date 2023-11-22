@@ -16,6 +16,7 @@ namespace FirstDayIn.Network {
         public string _playerName = null;
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
+        public static GameState State { get; private set; }
 
         [Header("SessionList")]
         public GameObject roomListCanvas;  
@@ -26,6 +27,7 @@ namespace FirstDayIn.Network {
         private void Awake() {
             if (instance == null) {
                 instance = this;
+                State = GetComponent<GameState>();
             } 
         }
 
@@ -106,6 +108,8 @@ namespace FirstDayIn.Network {
                 Debug.Log("OnConnectedToServer");
                 NetworkObject playerObject = runner.Spawn(playerPrefab, Vector3.zero);
                 runner.SetPlayerObject(runner.LocalPlayer, playerObject);
+
+                State.Server_SetState(GameState.EGameState.Pregame);
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
