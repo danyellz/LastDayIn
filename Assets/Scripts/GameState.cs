@@ -18,7 +18,7 @@ public class GameState : NetworkBehaviour
     protected StateMachine<EGameState> StateMachine = new StateMachine<EGameState>();
 
     private void Start() {
-        Debug.Log("GameState Spawned()");
+        Debug.Log("GameState Start()");
 
         StateMachine[EGameState.Off].onExit = newState =>
 		{
@@ -77,6 +77,11 @@ public class GameState : NetworkBehaviour
         };
     }
 
+    public override void Spawned() {
+        Debug.Log("GameState Spawned()");
+        Current = GameManager.instance._state;
+    }
+
     public void UpdateState() {
         if (Runner.IsForward) {
 			StateMachine.Update(Current, Previous);
@@ -84,7 +89,7 @@ public class GameState : NetworkBehaviour
     }
 
     public override void FixedUpdateNetwork() {
-    //     Debug.Log("FixedUpdateNetwork()");
+        Debug.Log("FixedUpdateNetwork()");
 
 		// if (Runner.IsServer) {
 		// 	if (Delay.Expired(Runner)) {
@@ -93,9 +98,9 @@ public class GameState : NetworkBehaviour
 		// 	}
 		// }
 
-		if (Runner.IsForward) {
-			StateMachine.Update(Current, Previous);
-        }
+		// if (Runner.IsForward) {
+		// 	StateMachine.Update(Current, Previous);
+        // }
 	}
 
     public void Server_DelaySetState(EGameState newState, float delay)

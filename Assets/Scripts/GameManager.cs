@@ -16,7 +16,7 @@ namespace FirstDayIn.Network {
         public string _playerName = null;
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
-        public GameState StateManager;
+        public GameState _stateManager;
         public GameState.EGameState _state;
 
         [Header("SessionList")]
@@ -29,12 +29,12 @@ namespace FirstDayIn.Network {
             if (instance == null) {
                 Debug.Log("GameManager Awake()");
                 instance = this;
-                StateManager = GetComponent<GameState>();
+                _stateManager = GetComponent<GameState>();
             } 
         }
 
         public override void Spawned() {
-            StateManager = GetComponent<GameState>();
+            _stateManager = GetComponent<GameState>();
         }
 
         public async void CreateSession() {
