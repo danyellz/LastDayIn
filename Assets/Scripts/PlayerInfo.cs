@@ -12,7 +12,7 @@ public class PlayerInfo : NetworkBehaviour
 
     private void Start() {
         if (this.HasStateAuthority) {
-            PlayerName = FusionConnection.instance._playerName;
+            PlayerName = GameManager.instance._playerName;
         }
     }
 

@@ -6,17 +6,17 @@ using System.Collections.Generic;
 using System;
 
 namespace FirstDayIn.Network {
-    public class FusionConnection : NetworkBehaviour, INetworkRunnerCallbacks
+    public class GameManager: Fusion.NetworkBehaviour, INetworkRunnerCallbacks
     {
 
-        public static FusionConnection instance;
+        public static GameManager instance;
         [HideInInspector] public NetworkRunner runner;
         [SerializeField] NetworkObject playerPrefab;
 
         public string _playerName = null;
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
-        [SerializeField] GameState stateManager;
+        public GameState StateManager;
         public GameState.EGameState _state;
 
         [Header("SessionList")]
@@ -27,17 +27,14 @@ namespace FirstDayIn.Network {
 
         private void Awake() {
             if (instance == null) {
-                Debug.Log("FusionConnection Awake()");
+                Debug.Log("GameManager Awake()");
                 instance = this;
-                stateManager = gameObject.AddComponent<GameState>();
+                StateManager = GetComponent<GameState>();
             } 
         }
 
-        private void Spawned() {
-            Debug.Log("FusionConnection Spawned()");
-            if (Runner.IsServer) {
-			    stateManager.Server_SetState(GameState.EGameState.Pregame);
-		    }
+        public override void Spawned() {
+            StateManager = GetComponent<GameState>();
         }
 
         public async void CreateSession() {
