@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
+using Helpers.Collections;
 using System.Linq;
 
 public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
@@ -19,9 +20,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 	private void Start()
 	{
         Debug.Log("PlayerRegistry Start()");
-		base.Spawned();
 		Instance = this;
-		Runner.AddCallbacks(this);
 	}
 
 	public override void Despawned(NetworkRunner runner, bool hasState)
@@ -29,7 +28,6 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
         Debug.Log("PlayerRegistry Despawned()");
 		base.Despawned(runner, hasState);
 		Instance = null;
-		runner.RemoveCallbacks(this);
 	}
 
 	public static void Server_Add(NetworkRunner runner, PlayerRef pRef, PlayerObject pObj)
@@ -81,6 +79,16 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
 		index = (byte)(indices[indices.Length - 1] + 1);
 		return true;
+	}
+
+    public static PlayerObject[] GetRandom(int count) {
+		List<PlayerObject> players = new List<PlayerObject>();
+		foreach (var kvp in Instance.ObjectByRef)
+		{
+			players.Add(kvp.Value);
+		}
+		
+		return players.Grab(count).ToArray();
 	}
 
     public void OnConnectedToServer(NetworkRunner runner) { }

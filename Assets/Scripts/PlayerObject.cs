@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using TMPro;
+using FirstDayIn.Network;
 
 public class PlayerObject : NetworkBehaviour {
 
@@ -9,17 +11,25 @@ public class PlayerObject : NetworkBehaviour {
 
     [field: Header("References"), SerializeField] public PlayerMovement Controller { get; private set; }
 
+    [Networked(OnChanged = nameof(UpdatePlayerName))] public NetworkString<_32> PlayerName { get; set; }
+    [SerializeField] public TextMeshPro playerLabel;
+
     [Networked] public PlayerRef Ref { get; set; }
 	[Networked] public byte Index { get; set; }
+
+    public void Server_Init(PlayerRef pRef, byte index)
+	{
+        Debug.Log($"PlayerObject Server_Init() Index {index}");
+
+		Ref = pRef;
+		Index = index;
+	}
 
     private void Start() {
         Debug.Log("PlayerObject Start()");
 
-		if (Object.HasStateAuthority)
-		{
-            Debug.Log("PlayerObject PlayerRegistry.Server_Add()");
-			PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
-		}
+        PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
+        PlayerName = GameManager.instance._playerName;
 
 		if (Object.HasInputAuthority)
 		{
@@ -27,11 +37,7 @@ public class PlayerObject : NetworkBehaviour {
 		}
 	}
 
-    public void Server_Init(PlayerRef pRef, byte index)
-	{
-        Debug.Log("PlayerObject Server_Init()");
-
-		Ref = pRef;
-		Index = index;
-	}
+    protected static void UpdatePlayerName(Changed<PlayerObject> changed) {
+        changed.Behaviour.playerLabel.text = changed.Behaviour.PlayerName.ToString();
+    }
 }

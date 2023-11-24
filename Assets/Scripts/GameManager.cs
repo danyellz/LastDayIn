@@ -4,6 +4,8 @@ using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
+using TMPro;
+using System.Linq;
 using static GameState;
 
 namespace FirstDayIn.Network {
@@ -16,16 +18,24 @@ namespace FirstDayIn.Network {
         [SerializeField] NetworkObject playerPrefab;
 
         public string _playerName = null;
-        private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
         public static GameState State { get; private set; }
-        // public GameState.EGameState _state;
+        private List<SessionInfo> _sessions = new List<SessionInfo>(); 
+        SessionInfo selectedSession;
+        private string _selectedSessionName;
+
+        [Header("HUD")]
+        public GameObject hudCanvas;
+        [SerializeField] public TMP_Text playerCountLabel;
+        public Button startGameButton;
 
         [Header("SessionList")]
         public GameObject roomListCanvas;  
         public Button refreshButton;
         public Transform sessionListContent;
         public GameObject sessionEntryPrefab;
+
+        public bool isCreateSession = false;
 
         private void Awake() {
             if (instance == null) {
@@ -37,10 +47,13 @@ namespace FirstDayIn.Network {
 
         public async void CreateSession() {
             Debug.Log("CreateSession");
+            isCreateSession = true;
 
             roomListCanvas.SetActive(false);
+            
             int randomInt = UnityEngine.Random.Range(1000,9999);
             string randomSessionName = "Room-" + randomInt.ToString();
+            _selectedSessionName = randomSessionName;
 
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
@@ -58,6 +71,9 @@ namespace FirstDayIn.Network {
             Debug.Log("ConnectToSession");
 
             roomListCanvas.SetActive(false);
+
+            _selectedSessionName = sessionName;
+
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
@@ -74,7 +90,6 @@ namespace FirstDayIn.Network {
 
             roomListCanvas.SetActive(true);
             _playerName = playerName;
-            // _state = GameState.EGameState.Pregame;
 
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
@@ -111,25 +126,35 @@ namespace FirstDayIn.Network {
             }
         }
 
+        public void StartGame() {
+            State.Server_SetState(GameState.EGameState.Play);
+            hudCanvas.SetActive(false);
+        }
+
+        public override void FixedUpdateNetwork() {
+            Debug.Log("GameManager FixedUpdateNetwork()");
+            playerCountLabel.text = selectedSession.PlayerCount + "/" + selectedSession.MaxPlayers;
+        }
+
         public void OnConnectedToServer(NetworkRunner runner) {
                 Debug.Log("OnConnectedToServer");
                 NetworkObject playerObject = runner.Spawn(playerPrefab, Vector3.zero);
                 runner.SetPlayerObject(runner.LocalPlayer, playerObject);
+                State.Server_SetState(GameState.EGameState.Pregame);
+
+                hudCanvas.SetActive(true);
+                selectedSession = _sessions.First();
+
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
             Debug.Log("OnSessionListUpdated");
-            _sessions.Clear();
             _sessions = sessionList;
         }
 
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
             Debug.Log("OnPlayerJoined");
-
-            if (player == runner.LocalPlayer) {
-                State.Server_SetState(GameState.EGameState.Pregame);
-            }
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }

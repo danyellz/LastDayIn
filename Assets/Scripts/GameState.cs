@@ -24,14 +24,6 @@ public class GameState : NetworkBehaviour
 		{
 			Debug.Log($"Exited {EGameState.Off} to {newState}");
 
-            PlayerRegistry.ForEach(pObj => {
-                pObj.Controller.IsDead = true;
-                pObj.Controller.IsSuspect = true;
-                pObj.Controller.EndInteraction();
-                pObj.Controller.Server_UpdateDeadState();
-                Debug.Log($"pObj Updated {pObj}");
-            });
-
 			if (GameManager.instance.runner.IsPlayer) // [PLAYER] Off -> *
 			{
 				// GameManager.im.gameUI.InitPregame(Runner);
@@ -42,23 +34,26 @@ public class GameState : NetworkBehaviour
 		{
 			Debug.Log($"Entered {EGameState.Pregame} from {state}");
 
-			// if (Runner.IsServer) { // [SERVER] * -> Pregame
-			// 	PlayerRegistry.ForEach(pObj =>
-			// 	{
-			// 		pObj.Controller.IsDead = false;
-			// 		pObj.Controller.IsSuspect = false;
-			// 		pObj.Controller.EndInteraction();
-			// 		pObj.Controller.Server_UpdateDeadState();
-            //         Debug.Log($"pObj Updated {pObj}");
-			// 	});
+            PlayerRegistry.ForEach(pObj => { // [SERVER] * -> Pregame
+                pObj.Controller.IsDead = false;
+                pObj.Controller.IsSuspect = false;
+                pObj.Controller.EndInteraction();
+                pObj.Controller.Server_UpdateDeadState();
+                Debug.Log($"pObj Updated {pObj}");
+            });
 
-			// 	// GameManager.rm.Purge();
-			// }
+				// GameManager.rm.Purge();
 		};
 
 		StateMachine[EGameState.Play].onEnter = state =>
 		{
 			Debug.Log($"Entered {EGameState.Play} from {state}");
+
+            PlayerObject[] objs = PlayerRegistry.GetRandom(1);
+            foreach (PlayerObject p in objs) {
+                p.Controller.IsSuspect = true;
+                Debug.Log($"[SPOILER] {p.playerLabel.text} is suspect");
+            }
 		};
 
 		StateMachine[EGameState.Meeting].onEnter = state =>
@@ -98,13 +93,9 @@ public class GameState : NetworkBehaviour
 
 
     public override void FixedUpdateNetwork() {
-		if (Runner.IsServer)
-		{
-			if (Delay.Expired(Runner))
-			{
+		if (Delay.Expired(Runner)) {
 				Delay = TickTimer.None;
 				Server_SetState(DelayedState);
-			}
 		}
 
         if (Runner.IsForward) {
