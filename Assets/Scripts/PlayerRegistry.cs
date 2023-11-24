@@ -38,6 +38,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 		{
 			Instance.ObjectByRef.Add(pRef, pObj);
 			pObj.Server_Init(pRef, index);
+            Debug.Log($"PlayerRegistry Count {Count}");
 		}
 		else
 		{
