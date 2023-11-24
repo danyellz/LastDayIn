@@ -4,20 +4,22 @@ using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
+using static GameState;
 
 namespace FirstDayIn.Network {
     public class GameManager: Fusion.NetworkBehaviour, INetworkRunnerCallbacks
     {
 
         public static GameManager instance;
+        public NetworkDebugStart starter;
         [HideInInspector] public NetworkRunner runner;
         [SerializeField] NetworkObject playerPrefab;
 
         public string _playerName = null;
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
-        public GameState _stateManager;
-        public GameState.EGameState _state;
+        public static GameState State { get; private set; }
+        // public GameState.EGameState _state;
 
         [Header("SessionList")]
         public GameObject roomListCanvas;  
@@ -29,12 +31,8 @@ namespace FirstDayIn.Network {
             if (instance == null) {
                 Debug.Log("GameManager Awake()");
                 instance = this;
-                _stateManager = GetComponent<GameState>();
+                State = GetComponent<GameState>();
             } 
-        }
-
-        public override void Spawned() {
-            _stateManager = GetComponent<GameState>();
         }
 
         public async void CreateSession() {
@@ -48,6 +46,7 @@ namespace FirstDayIn.Network {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
+            starter.StartHost();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = randomSessionName,
@@ -63,6 +62,7 @@ namespace FirstDayIn.Network {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
+            starter.StartClient();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = sessionName,
@@ -74,7 +74,7 @@ namespace FirstDayIn.Network {
 
             roomListCanvas.SetActive(true);
             _playerName = playerName;
-            _state = GameState.EGameState.Pregame;
+            // _state = GameState.EGameState.Pregame;
 
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
@@ -126,6 +126,10 @@ namespace FirstDayIn.Network {
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
             Debug.Log("OnPlayerJoined");
+
+            if (player == runner.LocalPlayer) {
+                State.Server_SetState(GameState.EGameState.Pregame);
+            }
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }

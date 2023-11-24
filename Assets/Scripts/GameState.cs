@@ -9,8 +9,8 @@ public class GameState : NetworkBehaviour
 {
 	public enum EGameState { Off, Pregame, Play, Meeting, VoteResults, CrewWin, ImpostorWin }
 
-    [Networked(OnChanged = nameof(Server_SetState))] public EGameState Previous { get; set; }
-    [Networked(OnChanged = nameof(Server_SetState))] public EGameState Current { get; set; }
+    [Networked] public EGameState Previous { get; set; }
+	[Networked] public EGameState Current { get; set; }
 
     [Networked] TickTimer Delay { get; set; }
 	[Networked] EGameState DelayedState { get; set; }
@@ -24,7 +24,13 @@ public class GameState : NetworkBehaviour
 		{
 			Debug.Log($"Exited {EGameState.Off} to {newState}");
 
-			if (GameManager.instance.runner.IsServer) { }
+            PlayerRegistry.ForEach(pObj => {
+                pObj.Controller.IsDead = true;
+                pObj.Controller.IsSuspect = true;
+                pObj.Controller.EndInteraction();
+                pObj.Controller.Server_UpdateDeadState();
+                Debug.Log($"pObj Updated {pObj}");
+            });
 
 			if (GameManager.instance.runner.IsPlayer) // [PLAYER] Off -> *
 			{
@@ -35,6 +41,19 @@ public class GameState : NetworkBehaviour
 		StateMachine[EGameState.Pregame].onEnter = state =>
 		{
 			Debug.Log($"Entered {EGameState.Pregame} from {state}");
+
+			// if (Runner.IsServer) { // [SERVER] * -> Pregame
+			// 	PlayerRegistry.ForEach(pObj =>
+			// 	{
+			// 		pObj.Controller.IsDead = false;
+			// 		pObj.Controller.IsSuspect = false;
+			// 		pObj.Controller.EndInteraction();
+			// 		pObj.Controller.Server_UpdateDeadState();
+            //         Debug.Log($"pObj Updated {pObj}");
+			// 	});
+
+			// 	// GameManager.rm.Purge();
+			// }
 		};
 
 		StateMachine[EGameState.Play].onEnter = state =>
@@ -77,30 +96,28 @@ public class GameState : NetworkBehaviour
         };
     }
 
-    public override void Spawned() {
-        Debug.Log("GameState Spawned()");
-        Current = GameManager.instance._state;
-    }
 
-    public void UpdateState() {
+    public override void FixedUpdateNetwork() {
+		if (Runner.IsServer)
+		{
+			if (Delay.Expired(Runner))
+			{
+				Delay = TickTimer.None;
+				Server_SetState(DelayedState);
+			}
+		}
+
         if (Runner.IsForward) {
 			StateMachine.Update(Current, Previous);
         }
-    }
+	}
 
-    public override void FixedUpdateNetwork() {
-        Debug.Log("FixedUpdateNetwork()");
-
-		// if (Runner.IsServer) {
-		// 	if (Delay.Expired(Runner)) {
-		// 		Delay = TickTimer.None;
-		// 		// Server_SetState(DelayedState);
-		// 	}
-		// }
-
-		// if (Runner.IsForward) {
-		// 	StateMachine.Update(Current, Previous);
-        // }
+    public void Server_SetState(EGameState st)
+	{
+        Debug.Log($"GameState Server_SetState() {st}");
+		if (Current == st) return;
+		Previous = Current;
+		Current = st;
 	}
 
     public void Server_DelaySetState(EGameState newState, float delay)
@@ -109,12 +126,4 @@ public class GameState : NetworkBehaviour
 		Delay = TickTimer.CreateFromSeconds(Runner, delay);
 		DelayedState = newState;
 	}
-
-    protected static void Server_SetState(Changed<GameState> changed) {
-        Debug.Log($"Server_SetState to {changed.Behaviour.Previous}");
-
-        if (changed.Behaviour.Current == GameManager.instance._state) return;
-		changed.Behaviour.Previous = changed.Behaviour.Current;
-		changed.Behaviour.Current = GameManager.instance._state;
-    }
 }
