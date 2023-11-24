@@ -49,7 +49,7 @@ public class GameState : NetworkBehaviour
 		{
 			Debug.Log($"Entered {EGameState.Play} from {state}");
 
-            PlayerObject[] objs = PlayerRegistry.GetRandom(5);
+            PlayerObject[] objs = PlayerRegistry.GetRandom(1);
             foreach (PlayerObject p in objs) {
                 p.Controller.IsSuspect = true;
                 Debug.Log($"[SPOILER] {p.playerLabel.text} is suspect");
