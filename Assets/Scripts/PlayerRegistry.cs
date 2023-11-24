@@ -21,6 +21,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
         Debug.Log("PlayerRegistry Start()");
 		base.Spawned();
 		Instance = this;
+		Runner.AddCallbacks(this);
 	}
 
 	public override void Despawned(NetworkRunner runner, bool hasState)
@@ -28,12 +29,12 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
         Debug.Log("PlayerRegistry Despawned()");
 		base.Despawned(runner, hasState);
 		Instance = null;
+		runner.RemoveCallbacks(this);
 	}
 
 	public static void Server_Add(NetworkRunner runner, PlayerRef pRef, PlayerObject pObj)
 	{
         Debug.Log("PlayerRegistry Server_Add()");
-		Debug.Assert(runner.IsServer);
 
 		if (Instance.GetAvailable(out byte index))
 		{

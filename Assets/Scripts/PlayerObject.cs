@@ -17,6 +17,7 @@ public class PlayerObject : NetworkBehaviour {
 
 		if (Object.HasStateAuthority)
 		{
+            Debug.Log("PlayerObject PlayerRegistry.Server_Add()");
 			PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
 		}
 
@@ -29,7 +30,6 @@ public class PlayerObject : NetworkBehaviour {
     public void Server_Init(PlayerRef pRef, byte index)
 	{
         Debug.Log("PlayerObject Server_Init()");
-		Debug.Assert(Runner.IsServer);
 
 		Ref = pRef;
 		Index = index;
