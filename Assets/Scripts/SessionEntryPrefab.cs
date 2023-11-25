@@ -21,6 +21,6 @@ public class SessionEntryPrefab : MonoBehaviour
     }
 
     private void JoinSession() {
-        FusionConnection.instance.ConnectToSession(sessionName.text);
+        GameManager.instance.ConnectToSession(sessionName.text);
     }
 }

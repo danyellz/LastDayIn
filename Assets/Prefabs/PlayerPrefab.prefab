@@ -966,11 +966,12 @@ GameObject:
   - component: {fileID: 7737344391480467060}
   - component: {fileID: 5124435085219346605}
   - component: {fileID: 3318762010724338108}
-  - component: {fileID: 4452648278355571264}
   - component: {fileID: 5121904180567428352}
   - component: {fileID: 1527179080943828231}
-  - component: {fileID: 2634408439327928027}
   - component: {fileID: 2380426072573299190}
+  - component: {fileID: 8639073644466656377}
+  - component: {fileID: 1961122607617254988}
+  - component: {fileID: 5912365350631541458}
   m_Layer: 8
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -1223,32 +1224,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: 0
   m_Camera: {fileID: 0}
---- !u!114 &4452648278355571264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453628029329876132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 1
-  AllowStateAuthorityOverride: 0
-  AoiPositionSource: {fileID: 0}
-  Flags: 264449
-  NetworkGuid:
-    RawGuidValue: 0ba9ea6ddebe145c3b172ef19ac42d93
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 5121904180567428352}
-  - {fileID: 2634408439327928027}
-  - {fileID: 2380426072573299190}
-  SimulationBehaviours: []
 --- !u!114 &5121904180567428352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1290,24 +1265,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCameraRoot: {fileID: 1588410035511120398}
---- !u!114 &2634408439327928027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453628029329876132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa76de92199b463fa731b1399b742bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
-  _PlayerName:
-    _length: 0
-    _data:
-      Data: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  playerLabel: {fileID: 968869460290330422}
 --- !u!114 &2380426072573299190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1338,6 +1295,68 @@ MonoBehaviour:
     _hash: -814817977
   StateHashes: 0000000084ca1cc0f9c6230b1c6a54339e2518b671a7e1076b36dbedb1afdc305a6c54cd
   TriggerHashes: 00000000
+--- !u!114 &8639073644466656377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453628029329876132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectInterest: 1
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 1
+  AllowStateAuthorityOverride: 0
+  AoiPositionSource: {fileID: 0}
+  Flags: 2305
+  NetworkGuid:
+    RawGuidValue: 0ba9ea6ddebe145c3b172ef19ac42d93
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 5121904180567428352}
+  - {fileID: 2380426072573299190}
+  - {fileID: 1961122607617254988}
+  - {fileID: 5912365350631541458}
+  SimulationBehaviours: []
+--- !u!114 &1961122607617254988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453628029329876132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd930ebd0017b417f9899bcb9a4777d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  <Controller>k__BackingField: {fileID: 5912365350631541458}
+  _PlayerName:
+    _length: 0
+    _data:
+      Data: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  playerLabel: {fileID: 968869460290330422}
+  _Index: 0
+--- !u!114 &5912365350631541458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453628029329876132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbbcbc92192c4e608aee6d58bdffbc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _IsSuspect: 0
+  _IsDead: 0
 --- !u!1 &3478956425989454673
 GameObject:
   m_ObjectHideFlags: 0
