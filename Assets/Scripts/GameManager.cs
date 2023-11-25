@@ -13,7 +13,6 @@ namespace FirstDayIn.Network {
     {
 
         public static GameManager instance;
-        // public NetworkDebugStart starter;
         [HideInInspector] public NetworkRunner runner;
         [SerializeField] NetworkObject playerPrefab;
 
@@ -61,7 +60,6 @@ namespace FirstDayIn.Network {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
-            // starter.StartHost();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = randomSessionName,
@@ -80,7 +78,6 @@ namespace FirstDayIn.Network {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
-            // starter.StartClient();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = sessionName,
@@ -129,6 +126,7 @@ namespace FirstDayIn.Network {
         }
 
         public void StartGame() {
+            Debug.Log($"PlayerCount: {PlayerRegistry.Count}");
             GameState.Instance.Server_SetState(GameState.EGameState.Play);
             hudCanvas.SetActive(false);
         }

@@ -32,6 +32,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
 	public static void Server_Add(NetworkRunner runner, PlayerRef pRef, PlayerObject pObj)
 	{
+        // Debug.Assert(runner.IsServer);
         Debug.Log("PlayerRegistry Server_Add()");
 
 		if (Instance.GetAvailable(out byte index))
@@ -48,6 +49,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
     public static void Server_Remove(NetworkRunner runner, PlayerRef pRef)
 	{
+		// Debug.Assert(runner.IsServer);
 		Debug.Assert(pRef.IsValid);
 
 		if (Instance.ObjectByRef.Remove(pRef) == false)
@@ -106,8 +108,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {
-        Debug.Log("PlayerRegisry OnPlayerLeft()");
-        Server_Remove(runner, player);
+        if (runner.IsServer) Server_Remove(runner, player);
     }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
