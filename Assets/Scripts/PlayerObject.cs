@@ -29,8 +29,8 @@ public class PlayerObject : NetworkBehaviour {
     private void Start() {
         Debug.Log("PlayerObject Start()");
 
+        PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
         if (Object.HasStateAuthority) {
-            PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
             PlayerName = GameManager.instance._playerName;
         }
 
