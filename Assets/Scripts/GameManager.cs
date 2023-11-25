@@ -25,6 +25,8 @@ namespace FirstDayIn.Network {
 
         [Header("HUD")]
         public GameObject hudCanvas;
+
+        public Transform topButtons;
         [SerializeField] public TMP_Text playerCountLabel;
         public Button startGameButton;
 
@@ -67,6 +69,8 @@ namespace FirstDayIn.Network {
                 SessionName = randomSessionName,
                 PlayerCount = 10,
             });
+
+            Debug.Log("Session Created - Session Name: " + randomSessionName);
         }
 
          public async void ConnectToSession(string sessionName) {
@@ -159,10 +163,24 @@ namespace FirstDayIn.Network {
 
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
-            Debug.Log("OnPlayerJoined");
+            SessionInfo sessionInfo = runner.SessionInfo;
+            string playerCount = sessionInfo.PlayerCount.ToString();
+            GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
+
+            Debug.Log("Player joined! Count = " + playerCount);
+
+            pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
         }
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {
+            SessionInfo sessionInfo = runner.SessionInfo;
+            string playerCount = sessionInfo.PlayerCount.ToString();
+            GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
+
+            Debug.Log("Player left! Count = " + playerCount);
+
+            pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
+        }
         public void OnInput(NetworkRunner runner, NetworkInput input) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
