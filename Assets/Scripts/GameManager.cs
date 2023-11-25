@@ -45,6 +45,13 @@ namespace FirstDayIn.Network {
             } 
         }
 
+        public override void Despawned(NetworkRunner runner, bool hasState) {
+            Debug.Log("GameManager Despawned()");
+		    base.Despawned(runner, hasState);
+		    // runner.RemoveCallbacks(this);
+		    starter.Shutdown();
+	    }
+
         public async void CreateSession() {
             Debug.Log("CreateSession");
             isCreateSession = true;
