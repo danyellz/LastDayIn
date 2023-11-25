@@ -45,6 +45,8 @@ namespace FirstDayIn.Network {
                 SessionName = randomSessionName,
                 PlayerCount = 10,
             });
+
+            Debug.Log("Session Created - Session Name: " + randomSessionName);
         }
 
          public async void ConnectToSession(string sessionName) {
