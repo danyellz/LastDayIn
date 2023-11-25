@@ -10,7 +10,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 {
 	public const byte CAPACITY = 10;
 
-	public static PlayerRegistry Instance;
+	public static PlayerRegistry Instance { get; private set; }
 
 	public static int Count => Instance.ObjectByRef.Count;
 

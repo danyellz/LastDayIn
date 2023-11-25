@@ -4,10 +4,13 @@ using System.Linq;
 using Fusion;
 using UnityEngine;
 using FirstDayIn.Network;
+using static PlayerRegistry;
 
 public class GameState : NetworkBehaviour
 {
 	public enum EGameState { Off, Pregame, Play, Meeting, VoteResults, CrewWin, ImpostorWin }
+
+    public static GameState Instance;
 
     [Networked] public EGameState Previous { get; set; }
 	[Networked] public EGameState Current { get; set; }
@@ -19,6 +22,8 @@ public class GameState : NetworkBehaviour
 
     private void Start() {
         Debug.Log("GameState Start()");
+
+        Instance = this;
 
         StateMachine[EGameState.Off].onExit = newState =>
 		{
@@ -49,11 +54,15 @@ public class GameState : NetworkBehaviour
 		{
 			Debug.Log($"Entered {EGameState.Play} from {state}");
 
-            PlayerObject[] objs = PlayerRegistry.GetRandom(1);
-            foreach (PlayerObject p in objs) {
-                p.Controller.IsSuspect = true;
-                Debug.Log($"[SPOILER] {p.playerLabel.text} is suspect");
+            if (state == EGameState.Pregame) {
+                PlayerObject[] objs = PlayerRegistry.GetRandom(1);
+                foreach (PlayerObject p in objs) {
+                    p.Controller.IsSuspect = true;
+                    Debug.Log($"[SPOILER] {p.playerLabel.text} is suspect");
+                }
             }
+
+            Debug.Log($"PlayerCount {PlayerRegistry.Count}");
 		};
 
 		StateMachine[EGameState.Meeting].onEnter = state =>

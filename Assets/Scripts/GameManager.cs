@@ -6,22 +6,21 @@ using System.Collections.Generic;
 using System;
 using TMPro;
 using System.Linq;
-using static GameState;
+using static PlayerRegistry;
 
 namespace FirstDayIn.Network {
     public class GameManager: Fusion.NetworkBehaviour, INetworkRunnerCallbacks
     {
 
         public static GameManager instance;
-        public NetworkDebugStart starter;
+        // public NetworkDebugStart starter;
         [HideInInspector] public NetworkRunner runner;
         [SerializeField] NetworkObject playerPrefab;
 
         public string _playerName = null;
 
-        public static GameState State { get; private set; }
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
-        SessionInfo selectedSession;
+        private SessionInfo _selectedSession;
         private string _selectedSessionName;
 
         [Header("HUD")]
@@ -31,6 +30,7 @@ namespace FirstDayIn.Network {
 
         [Header("SessionList")]
         public GameObject roomListCanvas;  
+        public Button createButton;
         public Button refreshButton;
         public Transform sessionListContent;
         public GameObject sessionEntryPrefab;
@@ -41,16 +41,11 @@ namespace FirstDayIn.Network {
             if (instance == null) {
                 Debug.Log("GameManager Awake()");
                 instance = this;
-                State = GetComponent<GameState>();
             } 
-        }
 
-        public override void Despawned(NetworkRunner runner, bool hasState) {
-            Debug.Log("GameManager Despawned()");
-		    base.Despawned(runner, hasState);
-		    // runner.RemoveCallbacks(this);
-		    starter.Shutdown();
-	    }
+            refreshButton.interactable = false;
+            createButton.interactable = false;
+        }
 
         public async void CreateSession() {
             Debug.Log("CreateSession");
@@ -66,7 +61,7 @@ namespace FirstDayIn.Network {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
-            starter.StartHost();
+            // starter.StartHost();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = randomSessionName,
@@ -85,7 +80,7 @@ namespace FirstDayIn.Network {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
-            starter.StartClient();
+            // starter.StartClient();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = sessionName,
@@ -134,29 +129,31 @@ namespace FirstDayIn.Network {
         }
 
         public void StartGame() {
-            State.Server_SetState(GameState.EGameState.Play);
+            GameState.Instance.Server_SetState(GameState.EGameState.Play);
             hudCanvas.SetActive(false);
         }
 
         public override void FixedUpdateNetwork() {
-            Debug.Log("GameManager FixedUpdateNetwork()");
-            playerCountLabel.text = selectedSession.PlayerCount + "/" + selectedSession.MaxPlayers;
+            // Debug.Log($"GameManager FixedUpdateNetwork() {_selectedSession.PlayerCount} / {_selectedSession.MaxPlayers}");
+            // playerCountLabel.text = _sessions.First().PlayerCount.ToString();//_selectedSession.PlayerCount + "/" + _selectedSession.MaxPlayers;
         }
 
         public void OnConnectedToServer(NetworkRunner runner) {
                 Debug.Log("OnConnectedToServer");
-                NetworkObject playerObject = runner.Spawn(playerPrefab, Vector3.zero);
+                NetworkObject playerObject = runner.Spawn(playerPrefab);
                 runner.SetPlayerObject(runner.LocalPlayer, playerObject);
-                State.Server_SetState(GameState.EGameState.Pregame);
+                GameState.Instance.Server_SetState(GameState.EGameState.Pregame);
 
                 hudCanvas.SetActive(true);
-                selectedSession = _sessions.First();
-
+                // _selectedSession = _sessions.Where(f => f.Name == _selectedSessionName).First();
+                // Debug.Log($"SelectedSession {_sessions.First()}");
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
             Debug.Log("OnSessionListUpdated");
             _sessions = sessionList;
+            createButton.interactable = true;
+            refreshButton.interactable = true;
         }
 
 
