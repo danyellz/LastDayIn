@@ -143,6 +143,14 @@ namespace FirstDayIn.Network {
 
                 GameState.Instance.Server_SetState(GameState.EGameState.Pregame);
                 hudCanvas.SetActive(true);
+
+                // GameObject server = GameObject.Find("Server");
+                // NetworkRunner serverRunner = server.GetComponent<NetworkRunner>();
+                // NetworkObject playerObject = serverRunner.Spawn(playerPrefab);
+                // serverRunner.SetPlayerObject(runner.LocalPlayer, playerObject);
+
+                // var playerObj = playerObject.GetComponent<PlayerObject>();
+                // PlayerRegistry.Server_Add(serverRunner, playerObject.StateAuthority, playerObj);
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
