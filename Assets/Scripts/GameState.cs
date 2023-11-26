@@ -20,16 +20,16 @@ public class GameState : NetworkBehaviour
 
     protected StateMachine<EGameState> StateMachine = new StateMachine<EGameState>();
 
-    private void Start() {
-        Debug.Log("GameState Start()");
+	public override void Spawned() {
+		Debug.Log("GameState Spawned()");
 
-        Instance = this;
+		 Instance = this;
 
         StateMachine[EGameState.Off].onExit = newState =>
 		{
 			Debug.Log($"Exited {EGameState.Off} to {newState}");
 
-			if (GameManager.instance.runner.IsPlayer) // [PLAYER] Off -> *
+			if (GameManager.instance._runner.IsPlayer) // [PLAYER] Off -> *
 			{
 				// GameManager.im.gameUI.InitPregame(Runner);
 			}
@@ -102,7 +102,7 @@ public class GameState : NetworkBehaviour
 		StateMachine[EGameState.ImpostorWin].onExit = newState => {
             Debug.Log($"Exited {EGameState.ImpostorWin} to {newState}");
         };
-    }
+	}
 
 
     public override void FixedUpdateNetwork() {

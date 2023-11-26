@@ -13,7 +13,11 @@ namespace FirstDayIn.Network {
     {
 
         public static GameManager instance;
-        [HideInInspector] public NetworkRunner runner;
+
+        public static GameState GameState { get; private set; }
+
+        [HideInInspector] public NetworkRunner _runner;
+        [SerializeField] NetworkDebugStart starter;
         [SerializeField] NetworkObject playerPrefab;
 
         public string _playerName = null;
@@ -34,35 +38,51 @@ namespace FirstDayIn.Network {
         public Transform sessionListContent;
         public GameObject sessionEntryPrefab;
 
-        public bool isCreateSession = false;
-
         private void Awake() {
             if (instance == null) {
                 Debug.Log("GameManager Awake()");
                 instance = this;
+                GameState = GetComponent<GameState>();
             } 
 
             refreshButton.interactable = false;
             createButton.interactable = false;
         }
 
+        public override void Spawned() {
+		    base.Spawned();
+
+		    if (Runner.IsServer) {
+                Debug.Log("GameManager Spawned() SetGameState");
+			    GameState.Server_SetState(GameState.EGameState.Pregame);
+		    }
+
+		    Runner.AddCallbacks(this);
+	    }
+
+        public override void Despawned(NetworkRunner runner, bool hasState) {
+		    base.Despawned(runner, hasState);
+		    runner.RemoveCallbacks(this);
+		    starter.Shutdown();
+	    }
+
         public async void CreateSession() {
             Debug.Log("CreateSession");
-            isCreateSession = true;
 
             roomListCanvas.SetActive(false);
             
             int randomInt = UnityEngine.Random.Range(1000,9999);
             string randomSessionName = "Room-" + randomInt.ToString();
 
-            if (runner == null) {
-                runner = gameObject.AddComponent<NetworkRunner>();
+            if (_runner == null) {
+                _runner = gameObject.AddComponent<NetworkRunner>();
+                _runner.ProvideInput = true;
             }
 
-            await runner.StartGame(new StartGameArgs() {
+            await _runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = randomSessionName,
-                PlayerCount = 10,
+                PlayerCount = 10
             });
 
             Debug.Log("Session Created - Session Name: " + randomSessionName);
@@ -73,11 +93,12 @@ namespace FirstDayIn.Network {
 
             roomListCanvas.SetActive(false);
 
-            if (runner == null) {
-                runner = gameObject.AddComponent<NetworkRunner>();
+            if (_runner == null) {
+                _runner = gameObject.AddComponent<NetworkRunner>();
+                _runner.ProvideInput = true;
             }
 
-            await runner.StartGame(new StartGameArgs() {
+            await _runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = sessionName,
             });
@@ -85,15 +106,10 @@ namespace FirstDayIn.Network {
 
         public void ConnectToLobby(string playerName) {
             Debug.Log("OnConnectToLobby " + playerName);
+            starter.StartServer();
 
             roomListCanvas.SetActive(true);
             _playerName = playerName;
-
-            if (runner == null) {
-                runner = gameObject.AddComponent<NetworkRunner>();
-            }
-
-            runner.JoinSessionLobby(SessionLobby.Shared); 
         }
 
         public void RefreshSessionListUI() {
@@ -126,12 +142,8 @@ namespace FirstDayIn.Network {
 
         public void StartGame() {
             Debug.Log($"PlayerCount: {PlayerRegistry.Count}");
-            GameState.Instance.Server_SetState(GameState.EGameState.Play);
             hudCanvas.SetActive(false);
-        }
-
-        public void PlayerRegistry_Add(PlayerRef pRef, PlayerObject pObj) {
-            PlayerRegistry.Server_Add(runner, pRef, pObj);
+            GameState.Server_SetState(GameState.EGameState.Play);
         }
 
         public override void FixedUpdateNetwork() {}
@@ -141,23 +153,14 @@ namespace FirstDayIn.Network {
                 NetworkObject playerObject = runner.Spawn(playerPrefab);
                 runner.SetPlayerObject(runner.LocalPlayer, playerObject);
 
-                GameState.Instance.Server_SetState(GameState.EGameState.Pregame);
                 hudCanvas.SetActive(true);
-
-                // GameObject server = GameObject.Find("Server");
-                // NetworkRunner serverRunner = server.GetComponent<NetworkRunner>();
-                // NetworkObject playerObject = serverRunner.Spawn(playerPrefab);
-                // serverRunner.SetPlayerObject(runner.LocalPlayer, playerObject);
-
-                // var playerObj = playerObject.GetComponent<PlayerObject>();
-                // PlayerRegistry.Server_Add(serverRunner, playerObject.StateAuthority, playerObj);
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
             Debug.Log("OnSessionListUpdated");
             _sessions = sessionList;
-            createButton.interactable = true;
-            refreshButton.interactable = true;
+            // createButton.interactable = true;
+            // refreshButton.interactable = true;
         }
 
 
@@ -180,18 +183,44 @@ namespace FirstDayIn.Network {
 
             pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
         }
-        public void OnInput(NetworkRunner runner, NetworkInput input) { }
-        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+        public void OnInput(NetworkRunner runner, NetworkInput input) { 
+            Debug.Log("OnInput");
+        }
+        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {
+            Debug.Log("OnInputMissing");
+        }
+        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {
+            Debug.Log("OnShutdown");
+        }
     
-        public void OnDisconnectedFromServer(NetworkRunner runner) { }
-        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
-        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
-        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
-        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
-        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
-        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) { }
-        public void OnSceneLoadDone(NetworkRunner runner) { }
-        public void OnSceneLoadStart(NetworkRunner runner) { }
+        public void OnDisconnectedFromServer(NetworkRunner runner) {
+            Debug.Log("OnDisconnectedFromServer");
+        }
+        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {
+            Debug.Log("OnConnectRequest");
+        }
+        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {
+            Debug.Log("OnConnectFailed");
+        }
+        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {
+            Debug.Log("OnUserSimulationMessage");
+        }
+        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {
+            Debug.Log("OnCustomAuthenticationResponse");
+        }
+        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {
+            Debug.Log("OnHostMigration");
+        }
+        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) {
+            Debug.Log("OnReliableDataReceived");
+        }
+        public void OnSceneLoadDone(NetworkRunner runner) {
+            Debug.Log("OnSceneLoadDone");
+            createButton.interactable = true;
+            refreshButton.interactable = true;
+        }
+        public void OnSceneLoadStart(NetworkRunner runner) {
+            Debug.Log("OnSceneLoadStart");
+        }
     }
 }

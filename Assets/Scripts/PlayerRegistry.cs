@@ -17,14 +17,15 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 	[Networked, Capacity(CAPACITY)]
 	NetworkDictionary<PlayerRef, PlayerObject> ObjectByRef { get; }
 
-	private void Start()
-	{
-        Debug.Log("PlayerRegistry Start()");
+	public override void Spawned() {
+		Debug.Log("PlayerRegistry Spawned()");
+
+		base.Spawned();
 		Instance = this;
+		Runner.AddCallbacks(this);
 	}
 
-	public override void Despawned(NetworkRunner runner, bool hasState)
-	{
+	public override void Despawned(NetworkRunner runner, bool hasState) {
         Debug.Log("PlayerRegistry Despawned()");
 		base.Despawned(runner, hasState);
 		Instance = null;
@@ -32,7 +33,6 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
 	public static void Server_Add(NetworkRunner runner, PlayerRef pRef, PlayerObject pObj)
 	{
-        Debug.Assert(runner.IsServer);
         Debug.Log("PlayerRegistry Server_Add()");
 
 		if (Instance.GetAvailable(out byte index))
@@ -49,7 +49,6 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
     public static void Server_Remove(NetworkRunner runner, PlayerRef pRef)
 	{
-		Debug.Assert(runner.IsServer);
 		Debug.Assert(pRef.IsValid);
 
 		if (Instance.ObjectByRef.Remove(pRef) == false)
