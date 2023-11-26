@@ -15,13 +15,10 @@ namespace FirstDayIn.Network {
         public static GameManager instance;
         [HideInInspector] public NetworkRunner runner;
         [SerializeField] NetworkObject playerPrefab;
-        // public NetworkDebugStart starter;
 
         public string _playerName = null;
 
         private List<SessionInfo> _sessions = new List<SessionInfo>(); 
-        private SessionInfo _selectedSession;
-        private string _selectedSessionName;
 
         [Header("HUD")]
         public GameObject hudCanvas;
@@ -57,13 +54,11 @@ namespace FirstDayIn.Network {
             
             int randomInt = UnityEngine.Random.Range(1000,9999);
             string randomSessionName = "Room-" + randomInt.ToString();
-            _selectedSessionName = randomSessionName;
 
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
-            // starter.StartServer();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = randomSessionName,
@@ -78,13 +73,10 @@ namespace FirstDayIn.Network {
 
             roomListCanvas.SetActive(false);
 
-            _selectedSessionName = sessionName;
-
             if (runner == null) {
                 runner = gameObject.AddComponent<NetworkRunner>();
             }
 
-            // starter.StartClient();
             await runner.StartGame(new StartGameArgs() {
                 GameMode = GameMode.Shared,
                 SessionName = sessionName,
@@ -138,20 +130,19 @@ namespace FirstDayIn.Network {
             hudCanvas.SetActive(false);
         }
 
-        public override void FixedUpdateNetwork() {
-            // Debug.Log($"GameManager FixedUpdateNetwork() {_selectedSession.PlayerCount} / {_selectedSession.MaxPlayers}");
-            // playerCountLabel.text = _sessions.First().PlayerCount.ToString();//_selectedSession.PlayerCount + "/" + _selectedSession.MaxPlayers;
+        public void PlayerRegistry_Add(PlayerRef pRef, PlayerObject pObj) {
+            PlayerRegistry.Server_Add(runner, pRef, pObj);
         }
+
+        public override void FixedUpdateNetwork() {}
 
         public void OnConnectedToServer(NetworkRunner runner) {
                 Debug.Log("OnConnectedToServer");
                 NetworkObject playerObject = runner.Spawn(playerPrefab);
                 runner.SetPlayerObject(runner.LocalPlayer, playerObject);
-                GameState.Instance.Server_SetState(GameState.EGameState.Pregame);
 
+                GameState.Instance.Server_SetState(GameState.EGameState.Pregame);
                 hudCanvas.SetActive(true);
-                // _selectedSession = _sessions.Where(f => f.Name == _selectedSessionName).First();
-                // Debug.Log($"SelectedSession {_sessions.First()}");
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {

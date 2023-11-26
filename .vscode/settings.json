@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "LastDayIn.sln"
+    "dotnet.defaultSolution": "First Day In.sln"
 }
