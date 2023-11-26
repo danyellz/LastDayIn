@@ -88,6 +88,7 @@ namespace FirstDayIn.Network {
             Debug.Log("Session Created - Session Name: " + randomSessionName);
         }
 
+        // TODO: - Add Session Name Manual Entry
          public async void ConnectToSession(string sessionName) {
             Debug.Log("ConnectToSession");
 
