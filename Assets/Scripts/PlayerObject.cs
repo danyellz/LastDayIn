@@ -38,6 +38,9 @@ public class PlayerObject : NetworkBehaviour {
             Debug.Log("PlayerObject HasInputAuthority");
             Local = this;
             PlayerName = GameManager.instance._playerName;
+
+            NetworkObject characterObject = GetComponent<NetworkObject>();
+            GameManager.instance._runner.SetPlayerObject(GameManager.instance._runner.LocalPlayer, characterObject);
         }
     }
 

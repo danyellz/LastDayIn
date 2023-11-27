@@ -4,6 +4,7 @@ using UnityEngine;
 using Cinemachine;
 using Fusion;
 using StarterAssets;
+using FirstDayIn.Network;
 
 public class FollowCamera : MonoBehaviour
 {

@@ -16,13 +16,12 @@ public class PlayerMovement : NetworkBehaviour
 
     [Networked(OnChanged = nameof(OnDeadChanged))] public bool IsDead { get; set; }
 
-    private void Start() {
-        Debug.Log("PlayerMovement Start()");
+    public override void Spawned() {
+      Debug.Log("PlayerMovement Spawned()");
 
-		if (Object.HasInputAuthority)
-		{
-			Local = this;
-		}
+		  if (Object.HasInputAuthority) {
+			  Local = this;
+		  }
     }
 
     public void EndInteraction() {
@@ -34,6 +33,6 @@ public class PlayerMovement : NetworkBehaviour
 	}
 
     static void OnDeadChanged(Changed<PlayerMovement> changed) {
-		PlayerMovement self = changed.Behaviour;
+		  PlayerMovement self = changed.Behaviour;
     }
 }

@@ -54,9 +54,12 @@ namespace FirstDayIn.Network {
             if (instance == null) {
                 instance = this;
                 GameState = GetComponent<GameState>();
+            }
+
+            if (Runner.IsServer) {
                 GameState.Server_SetState(GameState.EGameState.Pregame);
                 hudCanvas.SetActive(true);
-            } 
+            }
 
 		    Runner.AddCallbacks(this);
 	    }
