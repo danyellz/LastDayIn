@@ -31,9 +31,12 @@ namespace FirstDayIn.Network {
         [SerializeField] public TMP_Text playerCountLabel;
         public Button startGameButton;
 
-        [Header("SessionList")]
-        public GameObject roomListCanvas;  
+        [Header("Join Session")]
+        public GameObject lobbyCanvas;  
         public Button createButton;
+        public Button joinButton;
+
+        [Header("SessionList")]
         public Button refreshButton;
         public Transform sessionListContent;
         public GameObject sessionEntryPrefab;
@@ -45,22 +48,18 @@ namespace FirstDayIn.Network {
                 GameState = GetComponent<GameState>();
             } 
 
-            refreshButton.interactable = false;
             createButton.interactable = false;
+            joinButton.interactable = false;
         }
 
         public override void Spawned() {
+            Debug.Log("GameManager Spawned()");
 		    base.Spawned();
-
-		    if (Runner.IsServer) {
-                Debug.Log("GameManager Spawned() SetGameState");
-			    GameState.Server_SetState(GameState.EGameState.Pregame);
-		    }
-
 		    Runner.AddCallbacks(this);
 	    }
 
         public override void Despawned(NetworkRunner runner, bool hasState) {
+            Debug.Log("GameManager Despawned()");
 		    base.Despawned(runner, hasState);
 		    runner.RemoveCallbacks(this);
 		    starter.Shutdown();
@@ -69,7 +68,7 @@ namespace FirstDayIn.Network {
         public async void CreateSession() {
             Debug.Log("CreateSession");
 
-            roomListCanvas.SetActive(false);
+            lobbyCanvas.SetActive(false);
             
             int randomInt = UnityEngine.Random.Range(1000,9999);
             string randomSessionName = "Room-" + randomInt.ToString();
@@ -88,11 +87,11 @@ namespace FirstDayIn.Network {
             Debug.Log("Session Created - Session Name: " + randomSessionName);
         }
 
-        // TODO: - Add Session Name Manual Entry
+        // TODO: - Add Session Name Manual Entry.
          public async void ConnectToSession(string sessionName) {
             Debug.Log("ConnectToSession");
 
-            roomListCanvas.SetActive(false);
+            lobbyCanvas.SetActive(false);
 
             if (_runner == null) {
                 _runner = gameObject.AddComponent<NetworkRunner>();
@@ -109,7 +108,7 @@ namespace FirstDayIn.Network {
             Debug.Log("OnConnectToLobby " + playerName);
             starter.StartServer();
 
-            roomListCanvas.SetActive(true);
+            lobbyCanvas.SetActive(true);
             _playerName = playerName;
         }
 
@@ -151,17 +150,22 @@ namespace FirstDayIn.Network {
 
         public void OnConnectedToServer(NetworkRunner runner) {
                 Debug.Log("OnConnectedToServer");
-                NetworkObject playerObject = runner.Spawn(playerPrefab);
-                runner.SetPlayerObject(runner.LocalPlayer, playerObject);
+
+                GameObject server = GameObject.Find("Server");
+                NetworkRunner mainRunner = server.GetComponent<NetworkRunner>();
+                GameState.Runner = mainRunner;
+			    GameState.Server_SetState(GameState.EGameState.Pregame);
+
+                NetworkObject playerObject = mainRunner.Spawn(playerPrefab);
+                mainRunner.SetPlayerObject(runner.LocalPlayer, playerObject);
 
                 hudCanvas.SetActive(true);
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
             Debug.Log("OnSessionListUpdated");
+            sessionList.Clear();
             _sessions = sessionList;
-            // createButton.interactable = true;
-            // refreshButton.interactable = true;
         }
 
 
@@ -218,7 +222,7 @@ namespace FirstDayIn.Network {
         public void OnSceneLoadDone(NetworkRunner runner) {
             Debug.Log("OnSceneLoadDone");
             createButton.interactable = true;
-            refreshButton.interactable = true;
+            joinButton.interactable = true;
         }
         public void OnSceneLoadStart(NetworkRunner runner) {
             Debug.Log("OnSceneLoadStart");
