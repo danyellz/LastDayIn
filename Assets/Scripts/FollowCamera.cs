@@ -12,10 +12,9 @@ public class FollowCamera : MonoBehaviour
     private void Start() {
         NetworkObject characterObject = GetComponent<NetworkObject>();
         
-        if (characterObject.HasStateAuthority) {
+        if (characterObject.HasInputAuthority) {
             GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
             virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = playerCameraRoot;
-
             GetComponent<ThirdPersonController>().enabled = true;
         }
     }

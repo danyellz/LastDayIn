@@ -32,9 +32,7 @@ namespace FirstDayIn.Network {
         public Button startGameButton;
 
         [Header("Join Session")]
-        public GameObject lobbyCanvas;  
-        public Button createButton;
-        public Button joinButton;
+        public GameObject lobbyCanvas;
 
         [Header("SessionList")]
         public Button refreshButton;
@@ -46,10 +44,7 @@ namespace FirstDayIn.Network {
                 Debug.Log("GameManager Awake()");
                 instance = this;
                 GameState = GetComponent<GameState>();
-            } 
-
-            createButton.interactable = false;
-            joinButton.interactable = false;
+            }
         }
 
         public override void Spawned() {
@@ -60,6 +55,7 @@ namespace FirstDayIn.Network {
                 instance = this;
                 GameState = GetComponent<GameState>();
                 GameState.Server_SetState(GameState.EGameState.Pregame);
+                hudCanvas.SetActive(true);
             } 
 
 		    Runner.AddCallbacks(this);
@@ -75,13 +71,6 @@ namespace FirstDayIn.Network {
         public async void CreateSession(string sessionName) {
             Debug.Log("CreateSession");
 
-            lobbyCanvas.SetActive(false);
-            
-            int randomInt = UnityEngine.Random.Range(1000,9999);
-            string randomSessionName = "Room-" + randomInt.ToString();
-
-            lobbyCanvas.SetActive(false);
-
             starter.DefaultRoomName = sessionName;
             starter.StartHost();
         }
@@ -90,8 +79,6 @@ namespace FirstDayIn.Network {
          public async void ConnectToSession(string sessionName) {
             Debug.Log("ConnectToSession");
 
-            lobbyCanvas.SetActive(false);
-
             starter.DefaultRoomName = sessionName;
             starter.StartClient();
         }
@@ -99,13 +86,8 @@ namespace FirstDayIn.Network {
         public void ConnectToLobby(string playerName) {
             Debug.Log("OnConnectToLobby " + playerName);
 
-            lobbyCanvas.SetActive(true);
             _playerName = playerName;
-        }
-
-        public void SetLobbyButtonsActive(bool isActive) {
-            createButton.interactable = isActive;
-            joinButton.interactable = isActive;
+            lobbyCanvas.SetActive(true);
         }
 
         public void StartGame() {
@@ -157,13 +139,13 @@ namespace FirstDayIn.Network {
 
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
-            SessionInfo sessionInfo = runner.SessionInfo;
-            string playerCount = sessionInfo.PlayerCount.ToString();
-            GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
+            // SessionInfo sessionInfo = runner.SessionInfo;
+            // string playerCount = sessionInfo.PlayerCount.ToString();
+            // GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
 
-            Debug.Log("Player joined! Count = " + playerCount);
+            // Debug.Log("Player joined! Count = " + playerCount);
 
-            pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
+            // pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {

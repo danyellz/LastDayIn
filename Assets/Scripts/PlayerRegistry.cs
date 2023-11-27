@@ -35,6 +35,8 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 	{
         Debug.Log($"PlayerRegistry Server_Add to Runner {runner}");
 
+		Debug.Assert(runner.IsServer);
+		
 		if (Instance.GetAvailable(out byte index))
 		{
 			Instance.ObjectByRef.Add(pRef, pObj);
@@ -49,6 +51,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
     public static void Server_Remove(NetworkRunner runner, PlayerRef pRef)
 	{
+		Debug.Assert(runner.IsServer);
 		Debug.Assert(pRef.IsValid);
 
 		if (Instance.ObjectByRef.Remove(pRef) == false)

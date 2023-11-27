@@ -19,22 +19,27 @@ public class PlayerObject : NetworkBehaviour {
 
     public void Server_Init(PlayerRef pRef, byte index)
 	{
-        Debug.Log($"PlayerObject Server_Init() Index {index}");
+        Debug.Assert(Runner.IsServer);
 
 		Ref = pRef;
 		Index = index;
 	}
 
-    private void Start() {
-        Debug.Log("PlayerObject Start()");
+    public override void Spawned() {
+        base.Spawned();
 
-         if (Object.HasStateAuthority) {
-            PlayerName = GameManager.instance._playerName;
-            Local = this;
+        Debug.Log("PlayerObject Spawned()");
+
+        if (Object.HasStateAuthority) {
+            PlayerRegistry.Server_Add(Runner, Object.StateAuthority, this);
         }
 
-        PlayerRegistry.Server_Add(Runner, Object.StateAuthority, this);
-	}
+        if (Object.HasInputAuthority) {
+            Debug.Log("PlayerObject HasInputAuthority");
+            Local = this;
+            PlayerName = GameManager.instance._playerName;
+        }
+    }
 
     protected static void UpdatePlayerName(Changed<PlayerObject> changed) {
         changed.Behaviour.playerLabel.text = changed.Behaviour.PlayerName.ToString();

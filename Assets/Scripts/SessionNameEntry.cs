@@ -9,15 +9,19 @@ public class SessionNameEntry : MonoBehaviour
 {
     [SerializeField] GameObject canvas;
     [SerializeField] TMP_InputField sessionInputField;
+
+    [SerializeField] Button createButton;
     [SerializeField] Button joinButton;
 
-    public void ActivateButton() {
-        joinButton.interactable = true;
+    public void Start() {
+        createButton.interactable = false;
+        joinButton.interactable = false;
+        sessionInputField.onValueChanged.AddListener(delegate { InputFieldChanged(); });
     }
 
     public void CreateSession() {
         Debug.Log("SessionNameEntry CreateSession()" + sessionInputField.text);
-        GameManager.instance.ConnectToSession(sessionInputField.text);
+        GameManager.instance.CreateSession(sessionInputField.text);
         canvas.SetActive(false);
     }
 
@@ -25,5 +29,15 @@ public class SessionNameEntry : MonoBehaviour
         Debug.Log("SessionNameEntry JoinSession()" + sessionInputField.text);
         GameManager.instance.ConnectToSession(sessionInputField.text);
         canvas.SetActive(false);
+    }
+
+    public void InputFieldChanged() {
+        if (sessionInputField.text == "") {
+            createButton.interactable = false;
+            joinButton.interactable = false;
+        } else {
+            createButton.interactable = true;
+            joinButton.interactable = true;
+        }
     }
 }
