@@ -16,13 +16,13 @@ namespace FirstDayIn.Network {
 
         public static GameState GameState { get; private set; }
 
-        [HideInInspector] public NetworkRunner _runner;
+        [SerializeField] public NetworkRunner _runner;
         [SerializeField] NetworkDebugStart starter;
         [SerializeField] NetworkObject playerPrefab;
 
         public string _playerName = null;
 
-        private List<SessionInfo> _sessions = new List<SessionInfo>(); 
+        // private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
         [Header("HUD")]
         public GameObject hudCanvas;
@@ -38,8 +38,8 @@ namespace FirstDayIn.Network {
 
         [Header("SessionList")]
         public Button refreshButton;
-        public Transform sessionListContent;
-        public GameObject sessionEntryPrefab;
+        // public Transform sessionListContent;
+        // public GameObject sessionEntryPrefab;
 
         private void Awake() {
             if (instance == null) {
@@ -55,6 +55,13 @@ namespace FirstDayIn.Network {
         public override void Spawned() {
             Debug.Log("GameManager Spawned()");
 		    base.Spawned();
+
+            if (instance == null) {
+                instance = this;
+                GameState = GetComponent<GameState>();
+                GameState.Server_SetState(GameState.EGameState.Pregame);
+            } 
+
 		    Runner.AddCallbacks(this);
 	    }
 
@@ -65,7 +72,7 @@ namespace FirstDayIn.Network {
 		    starter.Shutdown();
 	    }
 
-        public async void CreateSession() {
+        public async void CreateSession(string sessionName) {
             Debug.Log("CreateSession");
 
             lobbyCanvas.SetActive(false);
@@ -73,18 +80,10 @@ namespace FirstDayIn.Network {
             int randomInt = UnityEngine.Random.Range(1000,9999);
             string randomSessionName = "Room-" + randomInt.ToString();
 
-            if (_runner == null) {
-                _runner = gameObject.AddComponent<NetworkRunner>();
-                _runner.ProvideInput = true;
-            }
+            lobbyCanvas.SetActive(false);
 
-            await _runner.StartGame(new StartGameArgs() {
-                GameMode = GameMode.Shared,
-                SessionName = randomSessionName,
-                PlayerCount = 10
-            });
-
-            Debug.Log("Session Created - Session Name: " + randomSessionName);
+            starter.DefaultRoomName = sessionName;
+            starter.StartHost();
         }
 
         // TODO: - Add Session Name Manual Entry.
@@ -93,51 +92,20 @@ namespace FirstDayIn.Network {
 
             lobbyCanvas.SetActive(false);
 
-            if (_runner == null) {
-                _runner = gameObject.AddComponent<NetworkRunner>();
-                _runner.ProvideInput = true;
-            }
-
-            await _runner.StartGame(new StartGameArgs() {
-                GameMode = GameMode.Shared,
-                SessionName = sessionName,
-            });
+            starter.DefaultRoomName = sessionName;
+            starter.StartClient();
         }
 
         public void ConnectToLobby(string playerName) {
             Debug.Log("OnConnectToLobby " + playerName);
-            starter.StartServer();
 
             lobbyCanvas.SetActive(true);
             _playerName = playerName;
         }
 
-        public void RefreshSessionListUI() {
-             Debug.Log("RefreshSessionListUI" + _sessions.Count.ToString());
-
-            foreach (Transform child in sessionListContent) {
-                Destroy(child.gameObject);
-            }
-
-            foreach (SessionInfo session in _sessions) {
-                Debug.Log("SessionFound " + session.Name);
-
-                if (session.IsVisible) {
-                    
-                    GameObject entry = GameObject.Instantiate(sessionEntryPrefab, sessionListContent);
-                    SessionEntryPrefab script = entry.GetComponent<SessionEntryPrefab>();
-
-                    Debug.Log("SessionLoaded " + session.Name);
-                    script.sessionName.text = session.Name;
-                    script.playerCount.text = session.PlayerCount + "/" + session.MaxPlayers;
-
-                    if (session.IsOpen == false || session.PlayerCount >= session.MaxPlayers) {
-                        script.joinButton.interactable = false;
-                    } else {
-                        script.joinButton.interactable = true;
-                    }
-                }
-            }
+        public void SetLobbyButtonsActive(bool isActive) {
+            createButton.interactable = isActive;
+            joinButton.interactable = isActive;
         }
 
         public void StartGame() {
@@ -146,26 +114,45 @@ namespace FirstDayIn.Network {
             GameState.Server_SetState(GameState.EGameState.Play);
         }
 
+
+        // public void RefreshSessionListUI() {
+        //      Debug.Log("RefreshSessionListUI" + _sessions.Count.ToString());
+
+        //     foreach (Transform child in sessionListContent) {
+        //         Destroy(child.gameObject);
+        //     }
+
+        //     foreach (SessionInfo session in _sessions) {
+        //         Debug.Log("SessionFound " + session.Name);
+
+        //         if (session.IsVisible) {
+                    
+        //             GameObject entry = GameObject.Instantiate(sessionEntryPrefab, sessionListContent);
+        //             SessionEntryPrefab script = entry.GetComponent<SessionEntryPrefab>();
+
+        //             Debug.Log("SessionLoaded " + session.Name);
+        //             script.sessionName.text = session.Name;
+        //             script.playerCount.text = session.PlayerCount + "/" + session.MaxPlayers;
+
+        //             if (session.IsOpen == false || session.PlayerCount >= session.MaxPlayers) {
+        //                 script.joinButton.interactable = false;
+        //             } else {
+        //                 script.joinButton.interactable = true;
+        //             }
+        //         }
+        //     }
+        // }
+
         public override void FixedUpdateNetwork() {}
 
         public void OnConnectedToServer(NetworkRunner runner) {
                 Debug.Log("OnConnectedToServer");
-
-                GameObject server = GameObject.Find("Server");
-                NetworkRunner mainRunner = server.GetComponent<NetworkRunner>();
-                GameState.Runner = mainRunner;
-			    GameState.Server_SetState(GameState.EGameState.Pregame);
-
-                NetworkObject playerObject = mainRunner.Spawn(playerPrefab);
-                mainRunner.SetPlayerObject(runner.LocalPlayer, playerObject);
-
-                hudCanvas.SetActive(true);
         }
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
             Debug.Log("OnSessionListUpdated");
-            sessionList.Clear();
-            _sessions = sessionList;
+            // sessionList.Clear();
+            // _sessions = sessionList;
         }
 
 
@@ -221,8 +208,6 @@ namespace FirstDayIn.Network {
         }
         public void OnSceneLoadDone(NetworkRunner runner) {
             Debug.Log("OnSceneLoadDone");
-            createButton.interactable = true;
-            joinButton.interactable = true;
         }
         public void OnSceneLoadStart(NetworkRunner runner) {
             Debug.Log("OnSceneLoadStart");

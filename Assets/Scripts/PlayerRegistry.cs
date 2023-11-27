@@ -33,7 +33,7 @@ public class PlayerRegistry : Fusion.NetworkBehaviour, INetworkRunnerCallbacks
 
 	public static void Server_Add(NetworkRunner runner, PlayerRef pRef, PlayerObject pObj)
 	{
-        Debug.Log("PlayerRegistry Server_Add()");
+        Debug.Log($"PlayerRegistry Server_Add to Runner {runner}");
 
 		if (Instance.GetAvailable(out byte index))
 		{

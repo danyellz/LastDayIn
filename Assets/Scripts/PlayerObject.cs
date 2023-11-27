@@ -28,15 +28,12 @@ public class PlayerObject : NetworkBehaviour {
     private void Start() {
         Debug.Log("PlayerObject Start()");
 
-        if (Object.HasStateAuthority) {
+         if (Object.HasStateAuthority) {
             PlayerName = GameManager.instance._playerName;
-            PlayerRegistry.Server_Add(Runner, Object.StateAuthority, this);
+            Local = this;
         }
 
-		if (Object.HasInputAuthority)
-		{
-			Local = this;
-		}
+        PlayerRegistry.Server_Add(Runner, Object.StateAuthority, this);
 	}
 
     protected static void UpdatePlayerName(Changed<PlayerObject> changed) {

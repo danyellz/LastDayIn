@@ -22,7 +22,7 @@ public class RefreshButton : MonoBehaviour
 
     private IEnumerator RefreshAndWait() {
         refreshButton.interactable = false;
-        GameManager.instance.RefreshSessionListUI();
+        // GameManager.instance.RefreshSessionListUI();
 
         yield return new WaitForSeconds(3f);
         refreshButton.interactable = true;

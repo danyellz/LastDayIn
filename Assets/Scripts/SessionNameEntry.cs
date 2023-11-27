@@ -15,8 +15,14 @@ public class SessionNameEntry : MonoBehaviour
         joinButton.interactable = true;
     }
 
-    public void SubmitName() {
-        Debug.Log("SessionNameEntry SubmitName()" + sessionInputField.text);
+    public void CreateSession() {
+        Debug.Log("SessionNameEntry CreateSession()" + sessionInputField.text);
+        GameManager.instance.ConnectToSession(sessionInputField.text);
+        canvas.SetActive(false);
+    }
+
+    public void JoinSession() {
+        Debug.Log("SessionNameEntry JoinSession()" + sessionInputField.text);
         GameManager.instance.ConnectToSession(sessionInputField.text);
         canvas.SetActive(false);
     }
