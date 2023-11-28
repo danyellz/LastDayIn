@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using UnityEngine;
-using FirstDayIn.Network;
+using TMPro;
 using static PlayerRegistry;
+using FirstDayIn.Network;
 
 public class GameState : NetworkBehaviour
 {
@@ -40,6 +41,8 @@ public class GameState : NetworkBehaviour
 			Debug.Log($"Entered {EGameState.Pregame} from {state}");
 
             if (Runner.IsServer) { // [SERVER] * -> Pregame
+				GameManager.instance.hudCanvas.SetActive(true);
+				
                 PlayerRegistry.ForEach(pObj => {
                     pObj.Controller.IsDead = false;
                     pObj.Controller.IsSuspect = false;
@@ -107,6 +110,13 @@ public class GameState : NetworkBehaviour
 
     public override void FixedUpdateNetwork() {
         if (Runner.IsServer) {
+			if (Current == EGameState.Pregame) {
+				SessionInfo sessionInfo = Runner.SessionInfo;
+            	string playerCount = sessionInfo.PlayerCount.ToString();
+            	GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
+            	pCountLabel.GetComponent<TextMeshProUGUI>().text = PlayerRegistry.Count + "/10";
+			}
+				
             if (Delay.Expired(Runner)) {
                     Delay = TickTimer.None;
                     Server_SetState(DelayedState);

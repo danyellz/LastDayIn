@@ -4,7 +4,6 @@ using UnityEngine;
 using Cinemachine;
 using Fusion;
 using StarterAssets;
-using FirstDayIn.Network;
 
 public class FollowCamera : MonoBehaviour
 {
@@ -16,6 +15,7 @@ public class FollowCamera : MonoBehaviour
         if (characterObject.HasInputAuthority) {
             GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
             virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = playerCameraRoot;
+
             GetComponent<ThirdPersonController>().enabled = true;
         }
     }

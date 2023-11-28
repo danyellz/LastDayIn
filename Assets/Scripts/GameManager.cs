@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 using TMPro;
 using System.Linq;
-using static PlayerRegistry;
+using static GameState;
 
 namespace FirstDayIn.Network {
     public class GameManager: Fusion.NetworkBehaviour, INetworkRunnerCallbacks
@@ -61,7 +61,7 @@ namespace FirstDayIn.Network {
                 hudCanvas.SetActive(true);
             }
 
-		    Runner.AddCallbacks(this);
+		    _runner.AddCallbacks(this);
 	    }
 
         public override void Despawned(NetworkRunner runner, bool hasState) {
@@ -71,7 +71,7 @@ namespace FirstDayIn.Network {
 		    starter.Shutdown();
 	    }
 
-        public async void CreateSession(string sessionName) {
+        public void CreateSession(string sessionName) {
             Debug.Log("CreateSession");
 
             starter.DefaultRoomName = sessionName;
@@ -79,7 +79,7 @@ namespace FirstDayIn.Network {
         }
 
         // TODO: - Add Session Name Manual Entry.
-         public async void ConnectToSession(string sessionName) {
+         public void ConnectToSession(string sessionName) {
             Debug.Log("ConnectToSession");
 
             starter.DefaultRoomName = sessionName;
@@ -142,23 +142,10 @@ namespace FirstDayIn.Network {
 
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
-            // SessionInfo sessionInfo = runner.SessionInfo;
-            // string playerCount = sessionInfo.PlayerCount.ToString();
-            // GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
-
-            // Debug.Log("Player joined! Count = " + playerCount);
-
-            // pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
+            Debug.Log("OnPlayerJoined()");
         }
-
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {
-            SessionInfo sessionInfo = runner.SessionInfo;
-            string playerCount = sessionInfo.PlayerCount.ToString();
-            GameObject pCountLabel = GameObject.Find("PlayerCountLabel");
-
-            Debug.Log("Player left! Count = " + playerCount);
-
-            pCountLabel.GetComponent<TextMeshProUGUI>().text = playerCount + "/10";
+            Debug.Log("OnPlayerLeft()");
         }
         public void OnInput(NetworkRunner runner, NetworkInput input) { 
             Debug.Log("OnInput");
