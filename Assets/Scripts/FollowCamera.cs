@@ -10,6 +10,7 @@ public class FollowCamera : MonoBehaviour
     [SerializeField] Transform playerCameraRoot;
 
     private void Start() {
+        Debug.Log("FollowCamera Start()");
         NetworkObject characterObject = GetComponent<NetworkObject>();
         
         if (characterObject.HasInputAuthority) {

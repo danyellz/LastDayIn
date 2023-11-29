@@ -32,14 +32,11 @@ public class PlayerObject : NetworkBehaviour {
         if (Object.HasInputAuthority) {
             Debug.Log("PlayerObject HasInputAuthority");
             Local = this;
-            PlayerName = GameManager.instance._playerName;
-
-            NetworkObject characterObject = GetComponent<NetworkObject>();
-            GameManager.instance._runner.SetPlayerObject(GameManager.instance._runner.LocalPlayer, characterObject);
+            //PlayerName = GameManager.instance._playerName;
         }
         
         if (Object.HasStateAuthority) {
-            PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
+            PlayerRegistry.Server_Add(GameManager.instance._runner, Object.InputAuthority, this);
         }
     }
 
