@@ -16,7 +16,7 @@ public class PlayerMovement : NetworkBehaviour
 
     [Networked(OnChanged = nameof(OnDeadChanged))] public bool IsDead { get; set; }
 
-    public override void Spawned() {
+    public void Start() {
       Debug.Log("PlayerMovement Spawned()");
 
 		  if (Object.HasInputAuthority) {

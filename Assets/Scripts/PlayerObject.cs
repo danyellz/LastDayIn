@@ -25,14 +25,9 @@ public class PlayerObject : NetworkBehaviour {
 		Index = index;
 	}
 
-    public override void Spawned() {
-        base.Spawned();
+    public void Start() {
 
         Debug.Log("PlayerObject Spawned()");
-
-        if (Object.HasStateAuthority) {
-            PlayerRegistry.Server_Add(Runner, Object.StateAuthority, this);
-        }
 
         if (Object.HasInputAuthority) {
             Debug.Log("PlayerObject HasInputAuthority");
@@ -41,6 +36,10 @@ public class PlayerObject : NetworkBehaviour {
 
             NetworkObject characterObject = GetComponent<NetworkObject>();
             GameManager.instance._runner.SetPlayerObject(GameManager.instance._runner.LocalPlayer, characterObject);
+        }
+        
+        if (Object.HasStateAuthority) {
+            PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
         }
     }
 

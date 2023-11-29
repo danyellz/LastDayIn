@@ -41,8 +41,6 @@ public class GameState : NetworkBehaviour
 			Debug.Log($"Entered {EGameState.Pregame} from {state}");
 
             if (Runner.IsServer) { // [SERVER] * -> Pregame
-				GameManager.instance.hudCanvas.SetActive(true);
-				
                 PlayerRegistry.ForEach(pObj => {
                     pObj.Controller.IsDead = false;
                     pObj.Controller.IsSuspect = false;
