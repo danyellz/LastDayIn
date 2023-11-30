@@ -25,18 +25,19 @@ public class PlayerObject : NetworkBehaviour {
 		Index = index;
 	}
 
-    public void Start() {
+    public override void Spawned() {
+        base.Spawned();
 
         Debug.Log("PlayerObject Spawned()");
 
         if (Object.HasInputAuthority) {
             Debug.Log("PlayerObject HasInputAuthority");
             Local = this;
-            //PlayerName = GameManager.instance._playerName;
+            PlayerName = PlayerPrefs.GetString("Username");
         }
-        
+
         if (Object.HasStateAuthority) {
-            PlayerRegistry.Server_Add(GameManager.instance._runner, Object.InputAuthority, this);
+            PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
         }
     }
 

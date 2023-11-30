@@ -16,34 +16,28 @@ namespace FirstDayIn.Network {
 
         public static GameState GameState { get; private set; }
 
-        [SerializeField] public NetworkRunner _runner;
-        [SerializeField] NetworkDebugStart starter;
-        [SerializeField] NetworkObject playerPrefab;
-
-        public string _playerName = null;
-
         // private List<SessionInfo> _sessions = new List<SessionInfo>(); 
 
         [Header("HUD")]
         public GameObject hudCanvas;
 
-        public Transform topButtons;
+        // public Transform topButtons;
         [SerializeField] public TMP_Text playerCountLabel;
         public Button startGameButton;
 
-        [Header("Join Session")]
-        public GameObject lobbyCanvas;
+        // [Header("Join Session")]
 
-        [Header("SessionList")]
-        public Button refreshButton;
+        // [Header("SessionList")]
+        // public Button refreshButton;
         // public Transform sessionListContent;
         // public GameObject sessionEntryPrefab;
 
         private void Awake() {
             if (instance == null) {
                 Debug.Log("GameManager Awake()");
-                instance = this;
+
                 GameState = GetComponent<GameState>();
+                instance = this;
             }
         }
 
@@ -55,38 +49,13 @@ namespace FirstDayIn.Network {
                 GameState.Server_SetState(GameState.EGameState.Pregame);
                 hudCanvas.SetActive(true);
             }
-
-		    _runner.AddCallbacks(this);
 	    }
 
         public override void Despawned(NetworkRunner runner, bool hasState) {
             Debug.Log("GameManager Despawned()");
 		    base.Despawned(runner, hasState);
 		    runner.RemoveCallbacks(this);
-		    starter.Shutdown();
 	    }
-
-        public void CreateSession(string sessionName) {
-            Debug.Log("CreateSession");
-
-            starter.DefaultRoomName = sessionName;
-            starter.StartHost();
-        }
-
-        // TODO: - Add Session Name Manual Entry.
-         public void ConnectToSession(string sessionName) {
-            Debug.Log("ConnectToSession");
-
-            starter.DefaultRoomName = sessionName;
-            starter.StartClient();
-        }
-
-        public void ConnectToLobby(string playerName) {
-            Debug.Log("OnConnectToLobby " + playerName);
-
-            _playerName = playerName;
-            lobbyCanvas.SetActive(true);
-        }
 
         public void StartGame() {
             Debug.Log($"PlayerCount: {PlayerRegistry.Count}");
@@ -122,8 +91,6 @@ namespace FirstDayIn.Network {
         //         }
         //     }
         // }
-
-        public override void FixedUpdateNetwork() {}
 
         public void OnConnectedToServer(NetworkRunner runner) {
                 Debug.Log("OnConnectedToServer");

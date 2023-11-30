@@ -8,6 +8,8 @@ using FirstDayIn.Network;
 public class NameEntry : MonoBehaviour
 {
     [SerializeField] GameObject canvas;
+
+    [SerializeField] GameObject lobbyCanvas;
     [SerializeField] TMP_InputField nameInputField;
     [SerializeField] Button submitButton;
 
@@ -17,7 +19,8 @@ public class NameEntry : MonoBehaviour
 
     public void SubmitName() {
         Debug.Log("SubmitName " + nameInputField.text);
-        GameManager.instance.ConnectToLobby(nameInputField.text);
+        PlayerPrefs.SetString("Username", nameInputField.text);
         canvas.SetActive(false);
+        lobbyCanvas.SetActive(true);
     }
 }

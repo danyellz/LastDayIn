@@ -5,11 +5,13 @@ using Cinemachine;
 using Fusion;
 using StarterAssets;
 
-public class FollowCamera : MonoBehaviour
+public class FollowCamera : NetworkBehaviour
 {
     [SerializeField] Transform playerCameraRoot;
 
-    private void Start() {
+    public override void Spawned() {
+        base.Spawned();
+        
         Debug.Log("FollowCamera Start()");
         NetworkObject characterObject = GetComponent<NetworkObject>();
         
@@ -17,6 +19,7 @@ public class FollowCamera : MonoBehaviour
             GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
             virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = playerCameraRoot;
 
+            GetComponent<Animator>().enabled = true;
             GetComponent<ThirdPersonController>().enabled = true;
         }
     }

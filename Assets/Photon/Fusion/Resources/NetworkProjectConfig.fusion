@@ -31,10 +31,10 @@
             "a": 0.5
         }
     },
-    "SceneLoadSpawnMode": 0,
+    "SceneLoadSpawnMode": 2,
     "DeltaCompressor": 0,
     "InvokeRenderInBatchMode": true,
-    "MaxNetworkedObjectCount": 50000,
+    "MaxNetworkedObjectCount": 65535,
     "NetworkIdIsObjectName": false,
     "HideNetworkObjectInactivityGuard": false,
     "EnableHostMigration": false,

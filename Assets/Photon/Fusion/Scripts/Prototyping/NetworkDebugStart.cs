@@ -570,13 +570,16 @@ public class NetworkDebugStart : Fusion.Behaviour {
       sceneManager = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
     }
 
+   Debug.Log("Runner Started()");
+
     return runner.StartGame(new StartGameArgs {
       GameMode = gameMode,
-      Address = address,
+      //Address = address,
       Scene = scene,
       SessionName = DefaultRoomName,
-      Initialized = initialized,
-      SceneManager = sceneManager
+      // Initialized = initialized,
+      // SceneManager = sceneManager,
+      PlayerCount = 10
     });
   }
 

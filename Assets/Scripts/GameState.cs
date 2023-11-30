@@ -30,7 +30,7 @@ public class GameState : NetworkBehaviour
 		{
 			Debug.Log($"Exited {EGameState.Off} to {newState}");
 
-			if (GameManager.instance._runner.IsPlayer) // [PLAYER] Off -> *
+			if (Runner.IsPlayer) // [PLAYER] Off -> *
 			{
 				// GameManager.im.gameUI.InitPregame(Runner);
 			}

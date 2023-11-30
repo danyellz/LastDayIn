@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using FirstDayIn.Network;
+using static NetworkStartBridge;
 
 public class SessionNameEntry : MonoBehaviour
 {
@@ -21,14 +21,14 @@ public class SessionNameEntry : MonoBehaviour
 
     public void CreateSession() {
         Debug.Log("SessionNameEntry CreateSession()" + sessionInputField.text);
-        GameManager.instance.CreateSession(sessionInputField.text);
         canvas.SetActive(false);
+        NetworkStartBridge.Instance.CreateSession(sessionInputField.text);
     }
 
     public void JoinSession() {
         Debug.Log("SessionNameEntry JoinSession()" + sessionInputField.text);
-        GameManager.instance.ConnectToSession(sessionInputField.text);
         canvas.SetActive(false);
+        NetworkStartBridge.Instance.ConnectToSession(sessionInputField.text);
     }
 
     public void InputFieldChanged() {
