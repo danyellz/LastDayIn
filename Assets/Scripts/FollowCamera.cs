@@ -9,18 +9,20 @@ public class FollowCamera : NetworkBehaviour
 {
     [SerializeField] Transform playerCameraRoot;
 
-    public override void Spawned() {
-        base.Spawned();
+    public void Start() {
+        // base.Spawned();
         
-        Debug.Log("FollowCamera Start()");
-        NetworkObject characterObject = GetComponent<NetworkObject>();
+        Debug.Log($"FollowCamera Start() {Object}");
+
+        // NetworkObject networkObject = GetComponent<NetworkObject>();
         
-        if (characterObject.HasInputAuthority) {
+        // if (Runner.LocalPlayer == Object.InputAuthority) {
             GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
             virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = playerCameraRoot;
 
             GetComponent<Animator>().enabled = true;
+            GetComponent<CharacterController>().enabled = true;
             GetComponent<ThirdPersonController>().enabled = true;
-        }
+        // }
     }
 }

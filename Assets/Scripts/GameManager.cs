@@ -49,6 +49,8 @@ namespace FirstDayIn.Network {
                 GameState.Server_SetState(GameState.EGameState.Pregame);
                 hudCanvas.SetActive(true);
             }
+
+            Runner.AddCallbacks(this);
 	    }
 
         public override void Despawned(NetworkRunner runner, bool hasState) {

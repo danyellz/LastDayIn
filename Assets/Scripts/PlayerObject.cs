@@ -30,13 +30,13 @@ public class PlayerObject : NetworkBehaviour {
 
         Debug.Log("PlayerObject Spawned()");
 
-        if (Object.HasInputAuthority) {
+        if (Runner.LocalPlayer == Object.InputAuthority) {
             Debug.Log("PlayerObject HasInputAuthority");
-            Local = this;
             PlayerName = PlayerPrefs.GetString("Username");
+            Local = this;
         }
 
-        if (Object.HasStateAuthority) {
+         if (Runner.IsServer) {
             PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
         }
     }
