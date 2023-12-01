@@ -42,8 +42,8 @@ namespace FirstDayIn.Network {
         }
 
         public override void Spawned() {
+            base.Spawned();
             Debug.Log("GameManager Spawned()");
-		    base.Spawned();
 
             if (Runner.IsServer) {
                 GameState.Server_SetState(GameState.EGameState.Pregame);

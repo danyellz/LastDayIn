@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using FirstDayIn.Network;
 
 public class SessionEntryPrefab : MonoBehaviour
 {

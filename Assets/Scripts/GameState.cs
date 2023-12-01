@@ -5,7 +5,6 @@ using Fusion;
 using UnityEngine;
 using TMPro;
 using static PlayerRegistry;
-using FirstDayIn.Network;
 
 public class GameState : NetworkBehaviour
 {

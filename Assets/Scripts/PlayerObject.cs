@@ -4,7 +4,7 @@ using UnityEngine;
 using Fusion;
 using TMPro;
 using StarterAssets;
-using FirstDayIn.Network;
+using Cinemachine;
 
 public class PlayerObject : NetworkBehaviour {
 
@@ -14,6 +14,8 @@ public class PlayerObject : NetworkBehaviour {
 
     [Networked(OnChanged = nameof(UpdatePlayerName))] public NetworkString<_32> PlayerName { get; set; }
     [SerializeField] public TextMeshPro playerLabel;
+
+    [SerializeField] Transform followCameraRoot;
 
     [Networked] public PlayerRef Ref { get; set; }
 	[Networked] public byte Index { get; set; }
@@ -26,24 +28,23 @@ public class PlayerObject : NetworkBehaviour {
 		Index = index;
 	}
 
-    public void Awake() {
-        GetComponent<Animator>().enabled = true;
-        GetComponent<CharacterController>().enabled = true;
-        GetComponent<ThirdPersonController>().enabled = true;
-    }
-
-    public void Start() {
-        PlayerName = PlayerPrefs.GetString("Username");
-        Local = this;
-    }
-
     public override void Spawned() {
         base.Spawned();
 
-        Debug.Log("PlayerObject Spawned()");
-
-        if (Runner.IsServer) {
+        if (Object.HasStateAuthority) {
             PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
+        }
+
+        if (Object.HasInputAuthority) {
+            GetComponent<Animator>().enabled = true;
+            GetComponent<CharacterController>().enabled = true;
+            GetComponent<ThirdPersonController>().enabled = true;
+
+            GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
+            virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = followCameraRoot;
+
+            Local = this;
+            PlayerName = PlayerPrefs.GetString("Username");
         }
     }
 
