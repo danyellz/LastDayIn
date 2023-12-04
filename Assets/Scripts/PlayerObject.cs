@@ -30,6 +30,7 @@ public class PlayerObject : NetworkBehaviour {
         base.Spawned();
 
         if (Object.HasStateAuthority) {
+            GetComponent<NetworkTransform>().enabled = true;
             PlayerRegistry.Server_Add(Runner, Object.InputAuthority, this);
         }
 

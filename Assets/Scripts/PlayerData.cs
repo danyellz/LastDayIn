@@ -29,7 +29,6 @@ public class PlayerData : MonoBehaviour
             GetComponent<CharacterController>().enabled = true;
             GetComponent<PlayerInput>().enabled = true;
             GetComponent<ThirdPersonController>().enabled = true;
-            GetComponent<NetworkTransform>().enabled = true;
         }
     }
 }
