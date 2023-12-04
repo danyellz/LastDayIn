@@ -1320,7 +1320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   InterpolationSpace: 0
-  InterpolationTarget: {fileID: 1949637365789061383}
+  InterpolationTarget: {fileID: 0}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -1328,12 +1328,12 @@ MonoBehaviour:
     PosBlendStart: 0.25
     PosBlendEnd: 1
     PosMinCorrection: 0.025
-    PosTeleportDistance: 2
+    PosTeleportDistance: 0
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
   UseLegacySharedModeInterpolation: 0
-  TargetInterpolationDelay: 0.102
+  TargetInterpolationDelay: 0.2
 --- !u!114 &5385350144380589866
 MonoBehaviour:
   m_ObjectHideFlags: 0
