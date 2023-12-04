@@ -551,6 +551,7 @@ GameObject:
   - component: {fileID: 5368654251878092607}
   - component: {fileID: 968869460290330422}
   - component: {fileID: 3505965888136221140}
+  - component: {fileID: 9065500345762165888}
   m_Layer: 8
   m_Name: PlayerName
   m_TagString: Untagged
@@ -639,7 +640,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Test
+  m_text: '
 
 '
   m_isRightToLeft: 0
@@ -725,6 +726,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedce7ff2bfbb42128588fc1b8548575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9065500345762165888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2498030050111397857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectInterest: 1
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 0
+  AoiPositionSource: {fileID: 0}
+  Flags: 3073
+  NetworkGuid:
+    RawGuidValue: 00000000000000000000000000000000
+  NestedObjects: []
+  NetworkedBehaviours: []
+  SimulationBehaviours: []
 --- !u!1 &2564889335709569298
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,11 +989,12 @@ GameObject:
   - component: {fileID: 2996902529513390400}
   - component: {fileID: 5124435085219346605}
   - component: {fileID: 3318762010724338108}
-  - component: {fileID: 8639073644466656377}
   - component: {fileID: 1961122607617254988}
   - component: {fileID: 5912365350631541458}
+  - component: {fileID: -7852431405548616370}
   - component: {fileID: 7899486816798000029}
   - component: {fileID: 5385350144380589866}
+  - component: {fileID: 8639073644466656377}
   m_Layer: 8
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -1114,7 +1139,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3453628029329876132}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -1205,33 +1230,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: 0
   m_Camera: {fileID: 0}
---- !u!114 &8639073644466656377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453628029329876132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 0
-  AoiPositionSource: {fileID: 0}
-  Flags: 2305
-  NetworkGuid:
-    RawGuidValue: 0ba9ea6ddebe145c3b172ef19ac42d93
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 1961122607617254988}
-  - {fileID: 5912365350631541458}
-  - {fileID: 7899486816798000029}
-  - {fileID: 5385350144380589866}
-  SimulationBehaviours: []
 --- !u!114 &1961122607617254988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1249,9 +1247,7 @@ MonoBehaviour:
   _PlayerName:
     _length: 0
     _data:
-      Data: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  playerLabel: {fileID: 968869460290330422}
-  followCameraRoot: {fileID: 1588410035511120398}
+      Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   _Index: 0
 --- !u!114 &5912365350631541458
 MonoBehaviour:
@@ -1268,6 +1264,20 @@ MonoBehaviour:
   _interpolationDataSource: 0
   _IsSuspect: 0
   _IsDead: 0
+--- !u!114 &-7852431405548616370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453628029329876132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9db0f7130a4064e67b99cb7947363d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerLabel: {fileID: 968869460290330422}
+  followCameraRoot: {fileID: 1588410035511120398}
 --- !u!114 &7899486816798000029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1295,7 +1305,7 @@ MonoBehaviour:
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
   UseLegacySharedModeInterpolation: 0
-  TargetInterpolationDelay: 0.03
+  TargetInterpolationDelay: 0.2
 --- !u!114 &5385350144380589866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1326,6 +1336,34 @@ MonoBehaviour:
     _hash: -814817977
   StateHashes: 0000000084ca1cc0f9c6230b1c6a54339e2518b671a7e1076b36dbedb1afdc305a6c54cd
   TriggerHashes: 00000000
+--- !u!114 &8639073644466656377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453628029329876132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectInterest: 1
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 1
+  AllowStateAuthorityOverride: 0
+  AoiPositionSource: {fileID: 0}
+  Flags: 2305
+  NetworkGuid:
+    RawGuidValue: 0ba9ea6ddebe145c3b172ef19ac42d93
+  NestedObjects:
+  - {fileID: 9065500345762165888}
+  NetworkedBehaviours:
+  - {fileID: 1961122607617254988}
+  - {fileID: 5912365350631541458}
+  - {fileID: 7899486816798000029}
+  - {fileID: 5385350144380589866}
+  SimulationBehaviours: []
 --- !u!1 &3478956425989454673
 GameObject:
   m_ObjectHideFlags: 0

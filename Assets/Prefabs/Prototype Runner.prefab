@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6709199627602002245}
   - component: {fileID: 4965086730492169803}
   - component: {fileID: 4758602980182407583}
-  - component: {fileID: 4340509067943123034}
-  - component: {fileID: 2213895729847188454}
+  - component: {fileID: -496393975411814224}
+  - component: {fileID: 2978430735062145508}
   m_Layer: 0
   m_Name: Prototype Runner
   m_TagString: Untagged
@@ -107,7 +107,7 @@ MonoBehaviour:
   OnReliableData:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4340509067943123034
+--- !u!114 &-496393975411814224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,7 +122,7 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 8639073644466656377, guid: 0ba9ea6ddebe145c3b172ef19ac42d93, type: 3}
   SpawnMethod: 0
   StateAuthority: 0
---- !u!114 &2213895729847188454
+--- !u!114 &2978430735062145508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,8 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b55a6ca2d069a447a0201119c57bc9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Sequence: 2
+  Sequence: 0
   BlockingLayers:
     serializedVersion: 2
     m_Bits: 0
-  BlockedCheckRadius: 0
+  BlockedCheckRadius: 2

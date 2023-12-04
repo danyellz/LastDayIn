@@ -546,7 +546,7 @@ public class NetworkDebugStart : Fusion.Behaviour {
     var clientTasks = new List<Task>();
     for (int i = 0; i < clientCount; ++i) {
       clientTasks.Add(AddClient(serverMode, sceneRef));
-      yield return new WaitForSeconds(0.1f);
+      yield return new WaitForSeconds(1f);
     }
 
     var clientsStartTask = Task.WhenAll(clientTasks);

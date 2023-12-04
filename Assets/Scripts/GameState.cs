@@ -61,7 +61,7 @@ public class GameState : NetworkBehaviour
                     PlayerObject[] objs = PlayerRegistry.GetRandom(1);
                     foreach (PlayerObject p in objs) {
                         p.Controller.IsSuspect = true;
-                        Debug.Log($"[SPOILER] {p.playerLabel.text} is suspect");
+                        Debug.Log($"[SPOILER] {p.PlayerName} is suspect");
                     }
                 }
             }

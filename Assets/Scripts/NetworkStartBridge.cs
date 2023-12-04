@@ -15,7 +15,6 @@ public class NetworkStartBridge : MonoBehaviour
 
     public void CreateSession(string sessionName) {
         Debug.Log("CreateSession");
-        starter.ServerPort = 0;
         starter.DefaultRoomName = sessionName;
         starter.StartHost();
     }
@@ -23,7 +22,6 @@ public class NetworkStartBridge : MonoBehaviour
         // TODO: - Add Session Name Manual Entry.
     public void ConnectToSession(string sessionName) {
         Debug.Log("ConnectToSession");
-        starter.ServerPort = 0;
         starter.DefaultRoomName = sessionName;
         starter.StartClient();
     }

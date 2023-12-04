@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 using TMPro;
 using StarterAssets;
+using UnityEngine.InputSystem;
 using Cinemachine;
 
 public class PlayerObject : NetworkBehaviour {
@@ -12,10 +13,7 @@ public class PlayerObject : NetworkBehaviour {
 
     [field: Header("References"), SerializeField] public PlayerMovement Controller { get; private set; }
 
-    [Networked(OnChanged = nameof(UpdatePlayerName))] public NetworkString<_32> PlayerName { get; set; }
-    [SerializeField] public TextMeshPro playerLabel;
-
-    [SerializeField] Transform followCameraRoot;
+    [Networked(OnChanged = nameof(UpdatePlayerName))] public NetworkString<_16> PlayerName { get; set; }
 
     [Networked] public PlayerRef Ref { get; set; }
 	[Networked] public byte Index { get; set; }
@@ -36,19 +34,16 @@ public class PlayerObject : NetworkBehaviour {
         }
 
         if (Object.HasInputAuthority) {
-            GetComponent<Animator>().enabled = true;
-            GetComponent<CharacterController>().enabled = true;
-            GetComponent<ThirdPersonController>().enabled = true;
-
-            GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
-            virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = followCameraRoot;
-
             Local = this;
-            PlayerName = PlayerPrefs.GetString("Username");
+            Rpc_SetNickname(PlayerPrefs.GetString("Username"));
         }
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)] void Rpc_SetNickname(string name) {
+		PlayerName = name;
+	}
+
     protected static void UpdatePlayerName(Changed<PlayerObject> changed) {
-        changed.Behaviour.playerLabel.text = changed.Behaviour.PlayerName.ToString();
+        changed.Behaviour.GetComponent<PlayerData>().SetNickname(changed.Behaviour.PlayerName.Value);
     }
 }
