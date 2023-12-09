@@ -18,6 +18,8 @@ public class PlayerObject : NetworkBehaviour {
     [Networked] public PlayerRef Ref { get; set; }
 	[Networked] public byte Index { get; set; }
 
+    [SerializeField] Transform followCameraRoot;
+
     public void Server_Init(PlayerRef pRef, byte index)
 	{
         Debug.Assert(Runner.IsServer);
@@ -35,6 +37,14 @@ public class PlayerObject : NetworkBehaviour {
         }
 
         if (Object.HasInputAuthority) {
+            GameObject virtualCamera = GameObject.Find("PlayerFollowCamera");
+            virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = followCameraRoot;
+
+            GetComponent<Animator>().enabled = true;
+            GetComponent<CharacterController>().enabled = true;
+            GetComponent<PlayerInput>().enabled = true;
+            GetComponent<ThirdPersonController>().enabled = true;
+
             Local = this;
             Rpc_SetNickname(PlayerPrefs.GetString("Username"));
         }
