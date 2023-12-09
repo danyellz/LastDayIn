@@ -138,4 +138,4 @@ MonoBehaviour:
   BlockingLayers:
     serializedVersion: 2
     m_Bits: 0
-  BlockedCheckRadius: 2
+  BlockedCheckRadius: 0.5
