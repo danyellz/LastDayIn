@@ -16,13 +16,13 @@ public class PlayerMovement : NetworkBehaviour
 
     [Networked(OnChanged = nameof(OnDeadChanged))] public bool IsDead { get; set; }
 
-    public override void Spawned() {
-      Debug.Log("PlayerMovement Spawned()");
+    // public override void Spawned() {
+    //   Debug.Log("PlayerMovement Spawned()");
 
-		  if (Object.HasInputAuthority) {
-			  Local = this;
-		  }
-    }
+	// 	  if (Object.HasInputAuthority) {
+	// 		  Local = this;
+	// 	  }
+    // }
 
     public void EndInteraction() {
         
