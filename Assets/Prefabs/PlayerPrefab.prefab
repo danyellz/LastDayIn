@@ -1320,6 +1320,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   _IsSuspect: 0
   _IsDead: 0
+  _IsLightingUpdated: 0
 --- !u!114 &-7852431405548616370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1395,7 +1396,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3453628029329876132}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 

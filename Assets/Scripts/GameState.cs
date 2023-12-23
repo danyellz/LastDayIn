@@ -5,6 +5,7 @@ using Fusion;
 using UnityEngine;
 using TMPro;
 using static PlayerRegistry;
+using Helpers.Collections;
 
 public class GameState : NetworkBehaviour
 {
@@ -23,15 +24,14 @@ public class GameState : NetworkBehaviour
 	public override void Spawned() {
 		Debug.Log("GameState Spawned()");
 
-		 Instance = this;
-
         StateMachine[EGameState.Off].onExit = newState =>
 		{
 			Debug.Log($"Exited {EGameState.Off} to {newState}");
+			Instance = this;
 
 			if (Runner.IsPlayer) // [PLAYER] Off -> *
 			{
-				// GameManager.im.gameUI.InitPregame(Runner);
+				PlayerObject.Local.Controller.IsReadyForSpawn = true;
 			}
 		};
 
@@ -64,6 +64,10 @@ public class GameState : NetworkBehaviour
                         Debug.Log($"[SPOILER] {p.PlayerName} is suspect");
                     }
                 }
+
+				PlayerRegistry.ForEach(pObj => {
+					pObj.Controller.IsLightingUpdated = true;
+				});
             }
 
             Debug.Log($"PlayerCount {PlayerRegistry.Count}");
