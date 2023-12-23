@@ -1304,7 +1304,6 @@ MonoBehaviour:
     _data:
       Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   _Index: 0
-  followCameraRoot: {fileID: 1588410035511120398}
 --- !u!114 &5912365350631541458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1318,9 +1317,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  followCameraRoot: {fileID: 1588410035511120398}
   _IsSuspect: 0
   _IsDead: 0
   _IsLightingUpdated: 0
+  _IsReadyForSpawn: 0
 --- !u!114 &-7852431405548616370
 MonoBehaviour:
   m_ObjectHideFlags: 0
