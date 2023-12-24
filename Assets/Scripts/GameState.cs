@@ -31,7 +31,6 @@ public class GameState : NetworkBehaviour
 
 			if (Runner.IsPlayer) // [PLAYER] Off -> *
 			{
-				PlayerObject.Local.Controller.IsReadyForSpawn = true;
 			}
 		};
 

@@ -22,13 +22,16 @@ public class PlayerMovement : NetworkBehaviour
 
     [Networked(OnChanged = nameof(OnReadyForSpawn))] public bool IsReadyForSpawn { get; set; }
 
-    // public override void Spawned() {
-    //   Debug.Log("PlayerMovement Spawned()");
+    public override void Spawned() {
+      Debug.Log("PlayerMovement Spawned()");
 
-	// 	  if (Object.HasInputAuthority) {
-	// 		  Local = this;
-	// 	  }
-    // }
+	    if (Object.HasInputAuthority) {
+		    Local = this;
+	    }
+
+        NetworkObject playerObject = GetComponent<NetworkObject>();
+        IsReadyForSpawn = playerObject.HasInputAuthority;
+    }
 
     public void EndInteraction() {
         
@@ -52,6 +55,7 @@ public class PlayerMovement : NetworkBehaviour
         GameObject virtualCamera = GameObject.FindGameObjectWithTag("FollowCam");
         virtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = changed.Behaviour.followCameraRoot;
 
+        changed.Behaviour.Object.GetComponent<NetworkRigidbody>().enabled = changed.Behaviour.IsReadyForSpawn;
         changed.Behaviour.Object.GetComponent<CharacterController>().enabled = changed.Behaviour.IsReadyForSpawn;
         changed.Behaviour.Object.GetComponent<PlayerInput>().enabled = changed.Behaviour.IsReadyForSpawn;
         changed.Behaviour.Object.GetComponent<ThirdPersonController>().enabled = changed.Behaviour.IsReadyForSpawn;
